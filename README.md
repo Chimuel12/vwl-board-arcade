@@ -9,7 +9,8 @@ Todas las empresas y cifras son ficticias: Salzwasser Surf Co. (escuela y tienda
 | Juego | Capítulo | Qué practicas |
 |---|---|---|
 | Memory de conceptos | Kap 1–9 | 247 parejas Begriff–Erklärung · 9 niveles: de 4 cartas abiertas a 12 tapadas con máx. 2 errores |
-| Wave Quiz · 9 niveles | Kap 1–9 | 174 preguntas en 9 niveles de dificultad; 7/10 desbloquea el siguiente |
+| Wave Quiz · 9 niveles | Kap 1–9 | 174 preguntas en 9 niveles de dificultad (más las de actualidad); 7/10 desbloquea el siguiente |
+| Actualidad | Kap 1–9 | 20 preguntas nuevas cada día a partir de noticias reales de surf, snowboard y tech, con la fuente enlazada |
 | Board-Markt | Kap 7 | 9 niveles: noticias (una o dos a la vez), nuevo P*, precio máximo, rentas, Skiausrüstung (Übung 6) |
 | Preis-Setter | Kap 6 | 9 niveles: MR = MC con ayuda, mercados al azar, MC creciente, DWL, Markup, Übungsblatt 5 |
 | Duelo en la playa | Kap 5 | 9 niveles: matrices al azar (Nash 2×2 a 3×3, Pareto, secuenciales) y juego repetido |
@@ -36,6 +37,18 @@ Los niveles 2–9 se basan en los Übungsblätter 1–6, los Zusatzblätter 1–
 
 Desde el nivel 3 hay preguntas de respuesta numérica (se aceptan coma o punto). Las soluciones de la Altklausur para el DWL del monopolio en las versiones D y E usan una altura incorrecta (P_M − P_W en vez de P_M − MC); aquí se usa el cálculo correcto.
 
+## Actualidad: preguntas diarias
+
+Cada día a las 07:00 (Berlín) una rutina de Claude en la nube busca noticias de surf, snowboard/esquí y tecnología y escribe 20 preguntas nuevas en alemán (7 surf, 7 snow, 6 tech, niveles 1–9, capítulos 1–9, al menos 4 numéricas), cada una con su fuente.
+
+- Especificación de la rutina: [`tools/DAILY_NEWS.md`](tools/DAILY_NEWS.md)
+- Datos: `js/data/news/index.js` (lista de días) y un archivo por día `js/data/news/AAAA-MM-DD.js`
+- Validación: `node tools/validate-news.mjs` comprueba formato, fuentes, reparto y que cada cálculo (`calc`) dé el resultado (`n`).
+- Publicación: la rutina hace push a una rama `claude/…`. La Action [`news-merge.yml`](.github/workflows/news-merge.yml) la valida y, si solo cambia `js/data/news/`, la fusiona en `main`; [`pages.yml`](.github/workflows/pages.yml) publica la web.
+- Para pausar o borrar la rutina: https://claude.ai/code/routines
+
+Las preguntas de actualidad aparecen en el juego «Actualidad» y, las de los últimos 30 días, también mezcladas en los niveles del Wave Quiz.
+
 ## Uso
 
 Es una web estática (HTML, CSS y JavaScript sin dependencias ni build). Abre `index.html` en el navegador o sírvela en local:
@@ -58,6 +71,9 @@ js/main.js             portada y navegación (#memory, #quiz, …)
 js/data/concepts.js    247 parejas Begriff–Erklärung
 js/data/questions.js   nivel 1: preguntas aplicadas al sector
 js/data/levels.js      niveles 2–9 (Übungen + Altklausur)
+js/data/news/          actualidad: index.js + un archivo por día
+tools/                 validador y especificación de la rutina diaria
+.github/workflows/     publicación (Pages) y fusión automática de las preguntas diarias
 js/games/*.js          un archivo por juego
 ```
 

@@ -1,0 +1,50 @@
+# The daily cloud routine can only push to its own claude/... branch.
+# This workflow validates such a branch and, if it only touches js/data/news/,
+# merges it into main and triggers the Pages deployment.
+name: Merge daily news
+
+on:
+  push:
+    branches: ["claude/**"]
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: news-merge
+  cancel-in-progress: false
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Validate news data on the branch
+        run: node tools/validate-news.mjs
+      - name: Merge into main
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          CHANGED=$(git diff --name-only origin/main...HEAD)
+          echo "Changed files:"; echo "$CHANGED"
+          if [ -z "$CHANGED" ]; then echo "Nothing new compared with main."; exit 0; fi
+          if echo "$CHANGED" | grep -vqE '^js/data/news/[^/]+\.js$'; then
+            echo "::error::This branch changes files outside js/data/news/ – it is not merged automatically."
+            exit 1
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B main origin/main
+          git merge --no-ff -m "Actualidad: merge ${GITHUB_REF_NAME}" "$GITHUB_SHA"
+          node tools/validate-news.mjs
+          git push origin main
+          gh workflow run pages.yml --ref main
+          git push origin --delete "${GITHUB_REF_NAME}" || true

@@ -269,3 +269,12 @@ input[type=range]{width:100%;accent-color:var(--surf);height:28px}
 .lvinfo b{font-family:var(--f-display);font-weight:500;font-size:15.5px}
 .lvinfo span{color:var(--muted)}
 .hintbox{font-size:14.5px;color:var(--muted);border:1px dashed var(--line);border-radius:10px;padding:9px 12px}
+
+/* actualidad */
+.src{display:grid;gap:3px;margin-top:6px;font-size:14px}
+.src a{color:var(--surf);overflow-wrap:anywhere;text-underline-offset:3px}
+.newslist{display:grid;gap:8px}
+.newsday{display:flex;gap:14px;align-items:center;justify-content:space-between;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.newsday b{font-size:15.5px;line-height:1.35}
+@media (max-width:560px){.newsday{flex-direction:column;align-items:stretch}}
+.pill.tech{border-color:var(--gold);color:var(--gold)}

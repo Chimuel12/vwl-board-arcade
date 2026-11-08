@@ -64,7 +64,7 @@
         h("div", { class: "foot" },
           h("div", { class: "pills" },
             g.chapters.map(c => h("span", { class: "pill", text: c })),
-            g.sector.map(s => h("span", { class: "pill " + s, text: s === "surf" ? "Surf" : "Snow" }))),
+            g.sector.map(s => h("span", { class: "pill " + s, text: App.TOPICS[s] || s }))),
           h("span", { class: "best", html: best == null ? "nuevo" : (g.levelsKey ? `niveles <b>${best}/9</b>` : g.bestLabel ? g.bestLabel(best) : "récord <b>" + best + "</b>") })
         )));
     });
@@ -80,7 +80,7 @@
     const root = h("div", { class: "stack" });
     const head = h("header", { class: "ghead" },
       h("div", { class: "t" },
-        h("div", { class: "pills" }, g.chapters.map(c => h("span", { class: "pill", text: c })), g.sector.map(s => h("span", { class: "pill " + s, text: s === "surf" ? "Surf" : "Snow" }))),
+        h("div", { class: "pills" }, g.chapters.map(c => h("span", { class: "pill", text: c })), g.sector.map(s => h("span", { class: "pill " + s, text: App.TOPICS[s] || s }))),
         h("h1", { text: g.title, style: { fontSize: "clamp(26px,4vw,38px)" } }),
         h("p", { text: g.intro || g.desc })),
       h("a", { href: "#", class: "btn alt", text: "← Todos los juegos", style: { textDecoration: "none" } }));
@@ -98,4 +98,5 @@
   }
   window.addEventListener("hashchange", route);
   route();
+  App.loadRecentNews(30); // news questions also feed the Wave Quiz levels
 })();

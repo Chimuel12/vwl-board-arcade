@@ -227,6 +227,33 @@
   App.rnd = (a, b, step = 1) => a + step * Math.floor(Math.random() * (Math.floor((b - a) / step) + 1));
   App.pick = arr => arr[Math.floor(Math.random() * arr.length)];
 
+  /* ── Actualidad: daily news questions ──
+     manifest: js/data/news/index.js (NEWS_DAYS.push({d, n, title}))
+     one file per day: js/data/news/YYYY-MM-DD.js → NEWS_DAY("YYYY-MM-DD", [ ...questions ]) */
+  App.TOPICS = { surf: "Surf", snow: "Snow", tech: "Tech" };
+  App.news = { days: {} };
+  App.newsDays = () => (window.NEWS_DAYS || []).slice().sort((a, b) => b.d.localeCompare(a.d));
+  window.NEWS_DAY = (d, items) => {
+    if (App.news.days[d]) return;
+    const list = items.map((q, i) => Object.assign({}, q, { news: d, id: d + "#" + i }));
+    App.news.days[d] = list;
+    list.forEach(q => window.QUESTIONS.push(q)); // news questions also join the Wave Quiz levels
+  };
+  const newsPending = {};
+  App.loadNewsDay = d => {
+    if (App.news.days[d]) return Promise.resolve(App.news.days[d]);
+    if (!newsPending[d]) newsPending[d] = new Promise(res => {
+      const el = document.createElement("script");
+      el.src = "js/data/news/" + d + ".js";
+      el.onload = () => res(App.news.days[d] || []);
+      el.onerror = () => res([]);
+      document.head.append(el);
+    });
+    return newsPending[d];
+  };
+  App.loadRecentNews = (n = 30) => Promise.all(App.newsDays().slice(0, n).map(x => App.loadNewsDay(x.d)));
+  App.fmtDay = d => /^\d{4}-\d{2}-\d{2}$/.test(d) ? new Date(d + "T12:00:00").toLocaleDateString("es-ES", { day: "numeric", month: "short", year: "numeric" }) : d;
+
   /* registration */
   App.register = meta => App.games.push(meta);
 
