@@ -255,3 +255,17 @@ input[type=range]{width:100%;accent-color:var(--surf);height:28px}
 .plot .lvnum{fill:#fff;font-family:var(--f-display);font-size:16px;font-weight:700}
 .plot .lvnum.lk{font-size:14px}
 .plot .lvst{fill:var(--gold);font-size:13px;letter-spacing:1px}
+
+/* per-game level bar */
+.lvrow{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:6px}
+@media (max-width:560px){.lvrow{grid-template-columns:repeat(5,minmax(0,1fr))}}
+.lvb{appearance:none;font:inherit;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:6px 2px 5px;display:grid;justify-items:center;gap:1px;cursor:pointer;min-width:0}
+.lvb .n{font-family:var(--f-display);font-weight:700;font-size:16px}
+.lvb .s{font-size:10px;color:var(--gold);letter-spacing:1px}
+.lvb.won{border-color:var(--ok)}
+.lvb.on{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.lvb[disabled]{opacity:.45;cursor:not-allowed}
+.lvinfo{display:grid;gap:2px;font-size:15px}
+.lvinfo b{font-family:var(--f-display);font-weight:500;font-size:15.5px}
+.lvinfo span{color:var(--muted)}
+.hintbox{font-size:14.5px;color:var(--muted);border:1px dashed var(--line);border-radius:10px;padding:9px 12px}

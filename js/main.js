@@ -55,7 +55,8 @@
 
     const grid = h("section", { class: "grid", "aria-label": "Minijuegos" });
     App.games.slice().sort((a, b) => a.order - b.order).forEach(g => {
-      const best = App.best(g.bestKey || g.id);
+      let best = App.best(g.bestKey || g.id);
+      if (g.levelsKey) { const n = App.levels.passed(g.levelsKey); best = n || (App.best(g.id) != null ? 0 : null); }
       const ic = h("div", { class: "ic", html: g.art() });
       grid.append(h("a", { class: "gcard", href: "#" + g.id },
         ic,
@@ -64,7 +65,7 @@
           h("div", { class: "pills" },
             g.chapters.map(c => h("span", { class: "pill", text: c })),
             g.sector.map(s => h("span", { class: "pill " + s, text: s === "surf" ? "Surf" : "Snow" }))),
-          h("span", { class: "best", html: best == null ? "nuevo" : (g.bestLabel ? g.bestLabel(best) : "récord <b>" + best + "</b>") })
+          h("span", { class: "best", html: best == null ? "nuevo" : (g.levelsKey ? `niveles <b>${best}/9</b>` : g.bestLabel ? g.bestLabel(best) : "récord <b>" + best + "</b>") })
         )));
     });
 

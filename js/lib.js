@@ -135,6 +135,98 @@
   App.seg = (P, el, x1, y1, x2, y2) => App.set(el, { x1: P.X(x1), y1: P.Y(y1), x2: P.X(x2), y2: P.Y(y2) });
   App.poly = (P, el, pts) => App.set(el, { points: pts.map(p => P.X(p[0]) + "," + P.Y(p[1])).join(" ") });
 
+  /* ── levels: shared progress, level bar and result panel ── */
+  App.levels = {
+    get: id => App.store.get("lv:" + id, {}),
+    open: () => App.store.get("levelsOpen", false),
+    unlocked(id, max) {
+      if (this.open()) return max;
+      const p = this.get(id); let u = 1;
+      for (let i = 1; i <= max; i++) if ((p[i] || 0) >= 1) u = i + 1;
+      return Math.min(max, u);
+    },
+    record(id, n, stars) { const p = this.get(id); if (stars > (p[n] || 0)) { p[n] = stars; App.store.set("lv:" + id, p); } },
+    passed(id) { return Object.values(this.get(id)).filter(v => v >= 1).length; }
+  };
+  App.stars = n => "★".repeat(n) + "☆".repeat(3 - n);
+
+  /* defs: [{name, desc}] · onPick(n) starts that level */
+  App.levelBar = (id, defs, onPick) => {
+    const box = App.h("div", { class: "panel stack lvbar" });
+    let cur = App.store.get("lvcur:" + id, 1);
+    function render() {
+      const u = App.levels.unlocked(id, defs.length), p = App.levels.get(id);
+      if (cur > u) cur = u;
+      const btns = defs.map((d, i) => {
+        const n = i + 1, locked = n > u, st = p[n] || 0;
+        return App.h("button", { type: "button", class: "lvb" + (n === cur ? " on" : "") + (st ? " won" : ""), disabled: locked, "aria-pressed": n === cur, "aria-label": `Nivel ${n} ${d.name}` + (locked ? " (bloqueado)" : ""), title: d.name,
+          onclick: () => { cur = n; App.store.set("lvcur:" + id, n); render(); onPick(n); } },
+          App.h("span", { class: "n", text: locked ? "🔒" : n }), App.h("span", { class: "s", text: locked ? "" : App.stars(st) }));
+      });
+      const d = defs[cur - 1];
+      box.replaceChildren(
+        App.h("div", { class: "row between" },
+          App.h("span", { class: "label", text: "Niveles · supera uno para abrir el siguiente" }),
+          App.h("button", { class: "linkish", type: "button", text: App.levels.open() ? "Volver a bloquear niveles" : "Desbloquear todos", onclick: () => { App.store.set("levelsOpen", !App.levels.open()); render(); onPick(cur); } })),
+        App.h("div", { class: "lvrow" }, btns),
+        App.h("div", { class: "lvinfo" }, App.h("b", { text: `Nivel ${cur} · ${d.name}` }), App.h("span", { text: d.desc })));
+    }
+    render();
+    return {
+      el: box,
+      get cur() { return cur; },
+      max: defs.length,
+      refresh: render,
+      finish(stars) { App.levels.record(id, cur, stars); render(); },
+      go(n) { cur = n; App.store.set("lvcur:" + id, n); render(); onPick(cur); }
+    };
+  };
+  /* result block after a level: score line, stars, next / retry */
+  App.levelResult = (bar, stars, title, text, retry) => {
+    const passed = stars >= 1, last = bar.cur >= bar.max;
+    bar.finish(stars);
+    const actions = [];
+    if (passed && !last) actions.push(App.h("button", { class: "btn surf", type: "button", text: `Nivel ${bar.cur + 1} →`, onclick: () => bar.go(bar.cur + 1) }));
+    actions.push(App.h("button", { class: "btn " + (passed && !last ? "alt" : "surf"), type: "button", text: "Repetir nivel", onclick: retry }));
+    return App.h("div", { class: "feedback " + (passed ? "ok" : "no"), style: { gridColumn: "1/-1" } },
+      App.h("b", { text: `${title} · ${App.stars(stars)}` }),
+      App.h("span", { text: text + (passed ? (last ? " ¡Último nivel superado!" : ` Nivel ${bar.cur + 1} desbloqueado.`) : " Aún no alcanza para pasar de nivel.") }),
+      App.h("div", { class: "row", style: { marginTop: "6px" } }, actions));
+  };
+
+  /* numeric answers: "78.125", "13,2", "-3,45 %" */
+  App.parseNum = str => {
+    let t = String(str).trim().replace(/[€%\s]/g, "").replace(/[−–]/g, "-");
+    if (!t) return NaN;
+    if (t.includes(".") && t.includes(",")) t = t.replace(/\./g, "").replace(",", ".");
+    else if (t.includes(",")) t = t.replace(",", ".");
+    else if (/^-?\d{1,3}(\.\d{3})+$/.test(t)) t = t.replace(/\./g, "");
+    return parseFloat(t);
+  };
+  /* numeric question block; done(ok, value) is called once */
+  App.numQuestion = (label, answer, tol, unit, done) => {
+    const inp = App.h("input", { type: "text", inputmode: "decimal", class: "numin", autocomplete: "off", placeholder: "Tu resultado", "aria-label": label });
+    let used = false;
+    const go = App.h("button", { class: "btn surf", type: "button", text: "Comprobar", onclick: () => {
+      if (used) return;
+      const v = App.parseNum(inp.value);
+      if (isNaN(v)) { inp.classList.remove("shake"); void inp.offsetWidth; inp.classList.add("shake"); return; }
+      used = true; inp.disabled = go.disabled = true;
+      const ok = Math.abs(v - answer) <= tol;
+      inp.classList.add(ok ? "right" : "wrong");
+      done(ok, v, inp);
+    } });
+    inp.addEventListener("keydown", e => { if (e.key === "Enter") go.click(); });
+    const el = App.h("div", { class: "stack", style: { gap: "6px" } },
+      App.h("span", { class: "label", text: label }),
+      App.h("div", { class: "row" }, inp, unit ? App.h("span", { class: "label", text: unit }) : null, go));
+    setTimeout(() => inp.focus({ preventScroll: true }), 0);
+    return el;
+  };
+  App.fmtNum = v => (Math.abs(v - Math.round(v)) < 1e-9 ? App.n0(v) : App.n2(v));
+  App.rnd = (a, b, step = 1) => a + step * Math.floor(Math.random() * (Math.floor((b - a) / step) + 1));
+  App.pick = arr => arr[Math.floor(Math.random() * arr.length)];
+
   /* registration */
   App.register = meta => App.games.push(meta);
 

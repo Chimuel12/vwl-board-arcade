@@ -8,13 +8,15 @@ Todas las empresas y cifras son ficticias: Salzwasser Surf Co. (escuela y tienda
 
 | Juego | Capítulo | Qué practicas |
 |---|---|---|
-| Memory de conceptos | Kap 1–9 | Las 247 parejas Begriff–Erklärung del script, con repetición de lo que fallas |
+| Memory de conceptos | Kap 1–9 | 247 parejas Begriff–Erklärung · 9 niveles: de 4 cartas abiertas a 12 tapadas con máx. 2 errores |
 | Wave Quiz · 9 niveles | Kap 1–9 | 174 preguntas en 9 niveles de dificultad; 7/10 desbloquea el siguiente |
-| Board-Markt | Kap 7 | Desplazamientos de oferta y demanda con curvas animadas |
-| Preis-Setter | Kap 6 | Precio con Marktmacht: MR = MC, elasticidad, Markup = 1/ε, Deadweight Loss |
-| Duelo en la playa | Kap 5 | Nash-Gleichgewicht, Gefangenendilemma, juegos repetidos (Tit-for-Tat, Grim Trigger) |
-| Laboratorio Pigou | Kap 8 | Externalidades, MSC = MPC + MEC, impuesto pigouviano |
-| Taller doble | Kap 3 | Ventaja absoluta y comparativa, frontera de posibilidades de producción |
+| Board-Markt | Kap 7 | 9 niveles: noticias (una o dos a la vez), nuevo P*, precio máximo, rentas, Skiausrüstung (Übung 6) |
+| Preis-Setter | Kap 6 | 9 niveles: MR = MC con ayuda, mercados al azar, MC creciente, DWL, Markup, Übungsblatt 5 |
+| Duelo en la playa | Kap 5 | 9 niveles: matrices al azar (Nash 2×2 a 3×3, Pareto, secuenciales) y juego repetido |
+| Laboratorio Pigou | Kap 8 | 9 niveles: MEC lineal/constante/mixta, subvención por externalidad positiva, Zusatzblatt 4, pago de Coase |
+| Taller doble | Kap 3 | 9 niveles: 2 y 3 talleres, ventaja absoluta en todo, coste de oportunidad, maximizar ingresos |
+
+Cada juego tiene una barra de 9 niveles: superar uno desbloquea el siguiente y da de 1 a 3 estrellas. «Desbloquear todos» abre todos los niveles para repasar antes del examen. En la mayoría de niveles altos los números se generan al azar en cada partida.
 
 ## Niveles del Wave Quiz
 
