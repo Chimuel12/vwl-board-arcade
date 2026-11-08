@@ -39,7 +39,7 @@
     const mastery = App.store.get("mastery", {});
     const mastered = Object.values(mastery).filter(r => r.s >= 2).length;
     const total = window.CH.reduce((a, c) => a + c.p.length, 0);
-    const played = App.games.filter(g => App.best(g.id) != null).length;
+    const played = App.games.filter(g => App.best(g.bestKey || g.id) != null).length;
 
     const hero = h("section", { class: "hero" });
     hero.innerHTML = heroScene();
@@ -55,7 +55,7 @@
 
     const grid = h("section", { class: "grid", "aria-label": "Minijuegos" });
     App.games.slice().sort((a, b) => a.order - b.order).forEach(g => {
-      const best = App.best(g.id);
+      const best = App.best(g.bestKey || g.id);
       const ic = h("div", { class: "ic", html: g.art() });
       grid.append(h("a", { class: "gcard", href: "#" + g.id },
         ic,
@@ -64,7 +64,7 @@
           h("div", { class: "pills" },
             g.chapters.map(c => h("span", { class: "pill", text: c })),
             g.sector.map(s => h("span", { class: "pill " + s, text: s === "surf" ? "Surf" : "Snow" }))),
-          h("span", { class: "best", html: best == null ? "nuevo" : "récord <b>" + best + "</b>" })
+          h("span", { class: "best", html: best == null ? "nuevo" : (g.bestLabel ? g.bestLabel(best) : "récord <b>" + best + "</b>") })
         )));
     });
 

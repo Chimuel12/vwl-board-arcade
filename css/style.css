@@ -235,3 +235,23 @@ input[type=range]{width:100%;accent-color:var(--surf);height:28px}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
 }
+
+/* level map */
+.lvgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media (max-width:760px){.lvgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:440px){.lvgrid{grid-template-columns:minmax(0,1fr)}}
+.lvcard{appearance:none;text-align:left;font:inherit;color:var(--ink);background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;display:grid;gap:4px;cursor:pointer;min-width:0;transition:border-color .15s,transform .15s}
+.lvcard:hover:not([disabled]){border-color:var(--surf);transform:translateY(-2px)}
+.lvcard b{font-family:var(--f-display);font-size:17px;font-weight:500}
+.lvcard .sub{font-size:14px;color:var(--muted)}
+.lvcard .st{color:var(--gold);letter-spacing:1px}
+.lvcard.locked{opacity:.5;cursor:not-allowed}
+.lvnode:focus-visible circle{stroke:var(--ink)}
+.lvnode:hover circle{stroke:var(--ink)}
+.linkish{appearance:none;border:0;background:none;color:var(--surf);font:inherit;font-size:14px;cursor:pointer;padding:2px 4px;text-decoration:underline;text-underline-offset:3px}
+.numin{font:inherit;font-family:var(--f-mono);font-size:18px;padding:9px 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);width:min(220px,100%)}
+.numin.right{border-color:var(--ok);background:var(--okbg)}
+.numin.wrong{border-color:var(--bad);background:var(--badbg)}
+.plot .lvnum{fill:#fff;font-family:var(--f-display);font-size:16px;font-weight:700}
+.plot .lvnum.lk{font-size:14px}
+.plot .lvst{fill:var(--gold);font-size:13px;letter-spacing:1px}
