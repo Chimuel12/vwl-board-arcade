@@ -1,0 +1,632 @@
+[
+ {
+  "n": 1,
+  "ch": 1,
+  "term": "Ökonomik",
+  "kw": [
+   "Ökonomik",
+   "knappen Ressourcen",
+   "Knappheit",
+   "Wahl"
+  ],
+  "hook": "Was ist eigentlich Ökonomik?",
+  "def": [
+   "Ökonomik untersucht, wie Menschen, Firmen und Staaten mit knappen Ressourcen entscheiden.",
+   "Und welche Folgen diese Entscheidungen für die ganze Gesellschaft haben."
+  ],
+  "ex": {
+   "topic": "surf",
+   "lines": [
+    "Eine Surfschule in Portugal hat nur zehn Boards und zwei Lehrer.",
+    "Jeder zusätzliche Anfängerkurs bedeutet weniger Zeit für die Fortgeschrittenen."
+   ],
+   "stat": {
+    "value": 10,
+    "suffix": " Boards",
+    "label": "knappe Ressource, viele Wünsche"
+   }
+  },
+  "take": "Merke: Nicht Geld, sondern die Wahl unter Knappheit verbindet alles, was Ökonomen untersuchen."
+ },
+ {
+  "n": 2,
+  "ch": 1,
+  "term": "Wirtschaftssubjekt",
+  "kw": [
+   "Wirtschaftssubjekt",
+   "Entscheidungen",
+   "entscheidet"
+  ],
+  "hook": "Wer ist in der VWL eigentlich ein Wirtschaftssubjekt?",
+  "def": [
+   "Ein Wirtschaftssubjekt ist jede Person oder Gruppe, die Entscheidungen trifft.",
+   "Also Verbraucher, Familien, Unternehmen, Politiker und sogar ganze Staaten."
+  ],
+  "ex": {
+   "topic": "snow",
+   "lines": [
+    "Im Skigebiet entscheiden viele gleichzeitig: Gäste über Skitage, der Liftbetreiber über Preise, die Gemeinde über Schneekanonen.",
+    "Jeder davon ist ein Wirtschaftssubjekt."
+   ]
+  },
+  "take": "Merke: Wer entscheidet, ist ein Wirtschaftssubjekt."
+ },
+ {
+  "n": 3,
+  "ch": 1,
+  "term": "Positive Ökonomik",
+  "kw": [
+   "Positive Ökonomik",
+   "beschreibt",
+   "Daten",
+   "beschreiben"
+  ],
+  "hook": "Beschreiben oder bewerten? Starten wir mit der positiven Ökonomik.",
+  "def": [
+   "Positive Ökonomik beschreibt, was Menschen tatsächlich tun.",
+   "Ihre Aussagen kann man mit Daten überprüfen."
+  ],
+  "ex": {
+   "topic": "tech",
+   "lines": [
+    "Studierende verbringen jeden Tag ein bis drei Stunden auf Social Media.",
+    "Ob das stimmt, kann man messen. Das ist eine positive Aussage."
+   ],
+   "stat": {
+    "value": 3,
+    "suffix": " h",
+    "label": "Social Media pro Tag (Beispiel aus der Vorlesung)"
+   }
+  },
+  "take": "Merke: Positive Aussagen beschreiben, sie bewerten nicht."
+ },
+ {
+  "n": 4,
+  "ch": 1,
+  "term": "Normative Ökonomik",
+  "kw": [
+   "Normative Ökonomik",
+   "Werturteilen",
+   "sollten",
+   "normativ",
+   "sollte"
+  ],
+  "hook": "Und was ist dann normative Ökonomik?",
+  "def": [
+   "Normative Ökonomik empfiehlt, was Menschen und Gesellschaft tun sollten.",
+   "Ihre Aussagen beruhen auf Werturteilen und sind deshalb subjektiv."
+  ],
+  "ex": {
+   "topic": "snow",
+   "lines": [
+    "Der Satz: Skigebiete sollten Einheimischen günstigere Pässe geben, ist normativ.",
+    "Man kann ihn nicht mit Daten beweisen, nur begründen."
+   ]
+  },
+  "take": "Merke: Steht ein sollte im Satz, ist er meistens normativ."
+ },
+ {
+  "n": 5,
+  "ch": 1,
+  "term": "Optimierung",
+  "kw": [
+   "Optimierung",
+   "bestmögliche Wahl",
+   "Trade-offs",
+   "Optimieren",
+   "Nettonutzen"
+  ],
+  "hook": "Was meinen Ökonomen eigentlich mit Optimierung?",
+  "def": [
+   "Optimierung heißt, die bestmögliche Wahl mit den verfügbaren Informationen zu treffen.",
+   "Jede Optimierung hat Trade-offs, weil Zeit, Geld und Material knapp sind."
+  ],
+  "ex": {
+   "topic": "surf",
+   "lines": [
+    "Ein freier Nachmittag: surfen, für die Klausur lernen oder im Surfshop jobben?",
+    "Optimal ist die Option mit dem größten Nettonutzen."
+   ]
+  },
+  "take": "Merke: Optimieren heißt vergleichen und dann die beste Option wählen."
+ },
+ {
+  "n": 6,
+  "ch": 1,
+  "term": "Trade-off",
+  "kw": [
+   "Trade-off",
+   "aufgeben",
+   "knapp",
+   "Verzicht"
+  ],
+  "hook": "Was ist eigentlich ein Trade-off?",
+  "def": [
+   "Ein Trade-off entsteht, wenn man etwas aufgeben muss, um etwas anderes zu bekommen.",
+   "Weil Ressourcen knapp sind, steckt er in fast jeder Entscheidung."
+  ],
+  "ex": {
+   "topic": "snow",
+   "lines": [
+    "Ein Skigebiet kann mit seinem Budget neue Schneekanonen kaufen oder einen neuen Lift bauen.",
+    "Beides auf einmal geht nicht."
+   ]
+  },
+  "take": "Merke: Kein Gewinn ohne Verzicht. Genau das ist ein Trade-off."
+ },
+ {
+  "n": 7,
+  "ch": 1,
+  "term": "Opportunitätskosten",
+  "kw": [
+   "Opportunitätskosten",
+   "besten Alternative",
+   "45 Euro",
+   "aufgibst"
+  ],
+  "hook": "Was kostet dich eigentlich eine Stunde Surfen?",
+  "def": [
+   "Opportunitätskosten sind der Wert der besten Alternative, auf die du verzichtest.",
+   "Sie stehen auf keiner Rechnung, sind aber echte Kosten."
+  ],
+  "ex": {
+   "topic": "surf",
+   "lines": [
+    "Im Surfshop könntest du 15 Euro pro Stunde verdienen.",
+    "Drei Stunden Surfen kosten dich also 45 Euro entgangenen Lohn."
+   ],
+   "stat": {
+    "value": 45,
+    "suffix": " €",
+    "label": "Opportunitätskosten für 3 Stunden Surfen"
+   }
+  },
+  "take": "Merke: Die wahren Kosten einer Wahl sind das, was du dafür aufgibst.",
+  "formula": "Opportunitätskosten = Wert der besten Alternative"
+ },
+ {
+  "n": 8,
+  "ch": 1,
+  "term": "Budgetbeschränkung",
+  "kw": [
+   "Budgetbeschränkung",
+   "Budget",
+   "leisten",
+   "Grenze"
+  ],
+  "hook": "Warum kannst du nicht alles gleichzeitig haben?",
+  "def": [
+   "Die Budgetbeschränkung zeigt alles, was du dir leisten kannst, ohne dein Budget zu sprengen.",
+   "Sie macht Trade-offs sichtbar und messbar."
+  ],
+  "ex": {
+   "topic": "snow",
+   "lines": [
+    "Mit 600 Euro Winterbudget: ein Saisonpass oder neue Bindungen plus ein paar Tagestickets?",
+    "Alles zusammen passt nicht ins Budget."
+   ],
+   "stat": {
+    "value": 600,
+    "suffix": " €",
+    "label": "Winterbudget"
+   }
+  },
+  "take": "Merke: Das Budget zieht die Grenze. Innerhalb davon wählst du."
+ },
+ {
+  "n": 9,
+  "ch": 1,
+  "term": "Kosten-Nutzen-Analyse",
+  "kw": [
+   "Kosten-Nutzen-Analyse",
+   "Vorteile",
+   "Kosten",
+   "Nettonutzen",
+   "zehn Euro"
+  ],
+  "hook": "Wie treffen Ökonomen eine Entscheidung? Mit einer Kosten-Nutzen-Analyse.",
+  "def": [
+   "Man addiert alle Vorteile einer Alternative und zieht alle Kosten ab.",
+   "Beides misst man in derselben Einheit, meistens in Euro."
+  ],
+  "ex": {
+   "topic": "tech",
+   "lines": [
+    "Für zehn Euro Ersparnis drei Kilometer zu einem anderen Laden fahren? Beim Buch für 20 Euro sagen viele ja.",
+    "Beim Laptop für 1000 Euro sagen viele nein, obwohl es dieselben zehn Euro sind."
+   ],
+   "stat": {
+    "value": 10,
+    "suffix": " €",
+    "label": "gleiche Ersparnis, ob Buch oder Laptop"
+   }
+  },
+  "take": "Merke: Nettonutzen ist Nutzen minus Kosten. Und zehn Euro sind immer zehn Euro.",
+  "formula": "Nettonutzen = Nutzen − Kosten"
+ },
+ {
+  "n": 10,
+  "ch": 1,
+  "term": "Gleichgewicht",
+  "kw": [
+   "Gleichgewicht",
+   "niemand",
+   "abweichen",
+   "Veränderung"
+  ],
+  "hook": "Wann bleibt in der Wirtschaft alles, wie es ist?",
+  "def": [
+   "Im Gleichgewicht glaubt niemand, dass er profitieren würde, wenn er sein Verhalten ändert.",
+   "Darum gibt es keine Tendenz zur Veränderung."
+  ],
+  "ex": {
+   "topic": "surf",
+   "lines": [
+    "An einem Surfspot verteilen sich die Surfer so, dass kein Peak spürbar mehr Wellen pro Person bietet.",
+    "Ein Wechsel lohnt sich für niemanden mehr."
+   ]
+  },
+  "take": "Merke: Gleichgewicht heißt, niemand will abweichen."
+ },
+ {
+  "n": 11,
+  "ch": 1,
+  "term": "Free-Rider-Problem",
+  "kw": [
+   "Free-Rider-Problem",
+   "Vorteile",
+   "Kosten",
+   "Trittbrettfahren"
+  ],
+  "hook": "Warum macht beim Beach-Cleanup fast niemand mit?",
+  "def": [
+   "Das Free-Rider-Problem entsteht, wenn jemand die Vorteile genießt, ohne die Kosten zu tragen.",
+   "Wenn alle so denken, passiert am Ende zu wenig."
+  ],
+  "ex": {
+   "topic": "surf",
+   "lines": [
+    "Alle Surfer wollen einen sauberen Strand.",
+    "Aber jeder hofft, dass die anderen den Müll einsammeln."
+   ]
+  },
+  "take": "Merke: Trittbrettfahren ist für den Einzelnen bequem und für die Gruppe teuer."
+ },
+ {
+  "n": 12,
+  "ch": 1,
+  "term": "Lösungen fürs Trittbrettfahren",
+  "kw": [
+   "fair",
+   "sozialer Druck",
+   "Sanktionen",
+   "Institutionen",
+   "Putzplan",
+   "Normen"
+  ],
+  "hook": "Wie bekommt man Trittbrettfahrer zum Mitmachen?",
+  "def": [
+   "Erstens legt die Gruppe fest, was fair ist. Zweitens helfen sozialer Druck und Sanktionen.",
+   "Drittens wirken Institutionen wie Regeln, Verträge oder ein Putzplan."
+  ],
+  "ex": {
+   "topic": "snow",
+   "lines": [
+    "In einer Ski-WG gibt es einen festen Putzplan für die Küche.",
+    "Wer nicht putzt, zahlt in die Gemeinschaftskasse."
+   ]
+  },
+  "take": "Merke: Normen, Sanktionen und Institutionen lösen das Trittbrettfahrer-Problem."
+ },
+ {
+  "n": 13,
+  "ch": 1,
+  "term": "Empirie",
+  "kw": [
+   "Empirie",
+   "Daten",
+   "Ursache",
+   "Wirkung"
+  ],
+  "hook": "Stimmen ökonomische Theorien eigentlich?",
+  "def": [
+   "Empirie heißt: Ökonomen prüfen mit Daten, ob Theorien wie Optimierung und Gleichgewicht echtes Verhalten erklären.",
+   "Im Fokus stehen Ursache und Wirkung."
+  ],
+  "ex": {
+   "topic": "tech",
+   "lines": [
+    "Ein Startup testet zwei Preismodelle für seine Surf-Forecast-App.",
+    "Erst die Daten zeigen, welches Modell wirklich mehr Abos bringt."
+   ]
+  },
+  "take": "Merke: Theorie liefert Vermutungen, Daten entscheiden."
+ },
+ {
+  "n": 14,
+  "ch": 1,
+  "term": "Kausalität",
+  "kw": [
+   "Kausalität",
+   "Ursache",
+   "Wirkung"
+  ],
+  "hook": "Wann verursacht eine Sache wirklich eine andere?",
+  "def": [
+   "Kausalität heißt, dass eine Sache eine andere direkt beeinflusst.",
+   "Ändert man die Ursache, ändert sich die Wirkung."
+  ],
+  "ex": {
+   "topic": "snow",
+   "lines": [
+    "Ein Skigebiet verteuert den Liftpass und ändert sonst nichts.",
+    "Sinkt danach die Nachfrage, war der Preis die Ursache."
+   ]
+  },
+  "take": "Merke: Kausalität ist Ursache und Wirkung, nicht bloß Gleichzeitigkeit."
+ },
+ {
+  "n": 15,
+  "ch": 1,
+  "term": "Korrelation",
+  "kw": [
+   "Korrelation",
+   "zusammenhängen",
+   "Kausalität",
+   "Hitze"
+  ],
+  "hook": "Zwei Dinge steigen gleichzeitig. Hängen sie zusammen?",
+  "def": [
+   "Korrelation heißt nur, dass zwei Größen zusammenhängen: positiv, negativ oder gar nicht.",
+   "Eine Korrelation beweist aber keine Kausalität."
+  ],
+  "ex": {
+   "topic": "surf",
+   "lines": [
+    "Im Sommer steigen am Surfstrand die Eisverkäufe und die Sonnenbrände.",
+    "Eis verursacht keinen Sonnenbrand. Beides hängt an der Hitze."
+   ]
+  },
+  "take": "Merke: Korrelation ist keine Kausalität."
+ },
+ {
+  "n": 16,
+  "ch": 1,
+  "term": "Ausgelassene Variable",
+  "kw": [
+   "ausgelassene Variable",
+   "ignorierter Faktor",
+   "Saison",
+   "dritte Variable"
+  ],
+  "hook": "Was steckt hinter vielen falschen Schlüssen?",
+  "def": [
+   "Eine ausgelassene Variable ist ein ignorierter Faktor, der Ursache und Wirkung mitbestimmt.",
+   "Erst wenn man sie berücksichtigt, ergibt der Zusammenhang Sinn."
+  ],
+  "ex": {
+   "topic": "surf",
+   "lines": [
+    "Eine Surfschule startet im Mai eine Instagram-Kampagne, und die Buchungen steigen.",
+    "Aber im Mai beginnt auch die Saison. Das ist die ausgelassene Variable."
+   ]
+  },
+  "take": "Merke: Bevor du Ursache sagst, such die dritte Variable."
+ },
+ {
+  "n": 17,
+  "ch": 1,
+  "term": "Reverse Causation",
+  "kw": [
+   "Reverse Causation",
+   "umgekehrte Kausalität",
+   "anderen Richtung",
+   "Wohlstand",
+   "Richtung"
+  ],
+  "hook": "Und wenn Ursache und Wirkung andersherum laufen?",
+  "def": [
+   "Reverse Causation heißt umgekehrte Kausalität.",
+   "Der Zusammenhang ist echt, aber die Wirkung läuft in der anderen Richtung als gedacht."
+  ],
+  "ex": {
+   "topic": "snow",
+   "lines": [
+    "Länder mit mehr Skiliften sind reicher.",
+    "Wahrscheinlich machen nicht die Lifte reich, sondern Wohlstand ermöglicht erst den Bau der Lifte."
+   ]
+  },
+  "take": "Merke: Frag immer, in welche Richtung der Pfeil zeigt."
+ },
+ {
+  "n": 18,
+  "ch": 1,
+  "term": "Fundamentales Problem der Kausalanalyse",
+  "kw": [
+   "fundamentale Problem",
+   "Kausalanalyse",
+   "gleichzeitig",
+   "zweite Welt",
+   "Vergleichsgruppen"
+  ],
+  "hook": "Warum ist es so schwer, eine Wirkung zu beweisen?",
+  "def": [
+   "Das fundamentale Problem der Kausalanalyse: Man kann dieselbe Person nicht gleichzeitig mit und ohne Maßnahme beobachten.",
+   "Der Vergleich mit sich selbst ist unmöglich."
+  ],
+  "ex": {
+   "topic": "snow",
+   "lines": [
+    "Hätte eine Snowboarderin ohne Trainingscamp genauso gewonnen?",
+    "Wir sehen nur die eine Welt, in der sie im Camp war."
+   ]
+  },
+  "take": "Merke: Uns fehlt immer die zweite Welt. Deshalb brauchen wir Vergleichsgruppen."
+ },
+ {
+  "n": 19,
+  "ch": 1,
+  "term": "Kontrafaktische Situation",
+  "kw": [
+   "kontrafaktische Situation",
+   "ohne die Intervention",
+   "Kontrafaktisch"
+  ],
+  "hook": "Was wäre eigentlich passiert, wenn …?",
+  "def": [
+   "Die kontrafaktische Situation beschreibt, was ohne die Intervention geschehen wäre.",
+   "Erst der Vergleich mit ihr zeigt die echte Wirkung."
+  ],
+  "ex": {
+   "topic": "surf",
+   "lines": [
+    "Ein Surfpark eröffnet, und die Hotels im Ort sind voller.",
+    "Kontrafaktisch fragen wir: Wie voll wären sie ohne den Park gewesen?"
+   ]
+  },
+  "take": "Merke: Die Wirkung ist das Ergebnis minus das kontrafaktische Ergebnis.",
+  "formula": "Wirkung = Ergebnis − Kontrafakt"
+ },
+ {
+  "n": 20,
+  "ch": 1,
+  "term": "Selection Bias",
+  "kw": [
+   "Selection Bias",
+   "vor der Maßnahme",
+   "freiwillig",
+   "selbst auswählt"
+  ],
+  "hook": "Warum sind freiwillige Studien oft zu schön, um wahr zu sein?",
+  "def": [
+   "Selection Bias entsteht, wenn sich Gruppen schon vor der Maßnahme unterscheiden.",
+   "Dann kann man den Effekt der Maßnahme nicht mehr von diesen Unterschieden trennen."
+  ],
+  "ex": {
+   "topic": "tech",
+   "lines": [
+    "45 Firmen meldeten sich freiwillig für eine Studie zur Vier-Tage-Woche und waren danach produktiver.",
+    "Aber sie waren vermutlich schon vorher besonders motiviert."
+   ],
+   "stat": {
+    "value": 45,
+    "suffix": " Firmen",
+    "label": "meldeten sich freiwillig (Studie in Deutschland)"
+   }
+  },
+  "take": "Merke: Wer sich selbst auswählt, verzerrt das Ergebnis."
+ },
+ {
+  "n": 21,
+  "ch": 1,
+  "term": "Natürliches Experiment",
+  "kw": [
+   "natürlichen Experiment",
+   "Ereignis",
+   "nicht beeinflusst",
+   "zehn Prozent",
+   "Natürliche Experimente"
+  ],
+  "hook": "Was, wenn die Geschichte das Experiment für uns macht?",
+  "def": [
+   "Bei einem natürlichen Experiment teilt ein Ereignis, das der Forscher nicht beeinflusst, die Menschen in Gruppen ein.",
+   "Zum Beispiel ein neues Gesetz oder ein Stichtag."
+  ],
+  "ex": {
+   "topic": "vwl",
+   "lines": [
+    "1947 hob Großbritannien das Mindestalter für den Schulabgang von 14 auf 15 Jahre an.",
+    "Wer danach 14 wurde, ging ein Jahr länger zur Schule und verdiente im Schnitt rund zehn Prozent mehr."
+   ],
+   "stat": {
+    "value": 10,
+    "suffix": " %",
+    "label": "mehr Einkommen pro zusätzlichem Schuljahr"
+   }
+  },
+  "take": "Merke: Natürliche Experimente nutzen Zufälle der Geschichte als Vergleichsgruppe."
+ },
+ {
+  "n": 22,
+  "ch": 1,
+  "term": "Kontrolliertes Experiment",
+  "kw": [
+   "kontrollierten Experiment",
+   "zufällig",
+   "Kontroll-",
+   "Treatmentgruppe",
+   "Zufall"
+  ],
+  "hook": "Wie misst man eine Wirkung wirklich sauber?",
+  "def": [
+   "Im kontrollierten Experiment werden Menschen zufällig in Kontroll- und Treatmentgruppe eingeteilt.",
+   "So unterscheiden sich die Gruppen nur in der Maßnahme selbst."
+  ],
+  "ex": {
+   "topic": "snow",
+   "lines": [
+    "Ein Snowboard-Shop schickt zufällig der Hälfte seiner Newsletter-Abonnenten einen Rabattcode.",
+    "Der Unterschied bei den Käufen ist der Effekt des Codes."
+   ],
+   "stat": {
+    "value": 50,
+    "suffix": " %",
+    "label": "zufällig ausgewählte Kunden bekommen den Code"
+   }
+  },
+  "take": "Merke: Der Zufall schafft vergleichbare Gruppen."
+ },
+ {
+  "n": 23,
+  "ch": 1,
+  "term": "Laborexperiment",
+  "kw": [
+   "Laborexperiment",
+   "festen Regeln",
+   "echtem Geld",
+   "Kontrolle"
+  ],
+  "hook": "Was passiert eigentlich in einem ökonomischen Labor?",
+  "def": [
+   "Im Laborexperiment treffen Probanden, meist Studierende, unter festen Regeln Entscheidungen mit echtem Geld.",
+   "Vorteil: perfekte Kontrolle, und man kann es beliebig oft wiederholen."
+  ],
+  "ex": {
+   "topic": "tech",
+   "lines": [
+    "Am Computer spielen Studierende das Ultimatumspiel um zehn Euro.",
+    "Die Forscher ändern genau eine Regel und beobachten, wie sich das Verhalten verändert."
+   ],
+   "stat": {
+    "value": 10,
+    "suffix": " €",
+    "label": "echtes Geld im Spiel"
+   }
+  },
+  "take": "Merke: Labor heißt volle Kontrolle, aber nicht immer echtes Leben."
+ },
+ {
+  "n": 24,
+  "ch": 1,
+  "term": "Feldexperiment",
+  "kw": [
+   "Feldexperiment",
+   "natürlichen Umgebung",
+   "externe Validität",
+   "echtes Verhalten"
+  ],
+  "hook": "Und wenn das Experiment mitten im echten Leben stattfindet?",
+  "def": [
+   "Im Feldexperiment beobachtet man Menschen in ihrer natürlichen Umgebung.",
+   "Das bringt hohe externe Validität, ist aber teurer und oft schwer zu wiederholen."
+  ],
+  "ex": {
+   "topic": "surf",
+   "lines": [
+    "Eine Surfschule verlangt an zufällig gewählten Tagen zwei verschiedene Preise.",
+    "Die Kunden buchen ganz normal und merken nichts vom Experiment."
+   ]
+  },
+  "take": "Merke: Feldexperiment heißt echtes Verhalten, mit weniger Kontrolle."
+ }
+]
