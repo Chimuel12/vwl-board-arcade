@@ -24,6 +24,15 @@
       list.map(x => h("a", { href: x.u, target: "_blank", rel: "noopener noreferrer", text: `${x.t} · ${x.o}` + (x.d ? ` · ${App.fmtDay(x.d)}` : "") })));
   }
 
+  /* "¿No queda claro?" — videos of the concepts the question is about (or the chapter's videos in a new tab) */
+  function videoBlock(q, ok) {
+    if (!App.videos.all().length) return null;
+    const rel = App.videos.related([q.q, q.x, q.a ? q.a[0] : ""].join(" "), 2, q.k);
+    const kids = rel.map(v => App.videos.button(v, `${v.term} · ${App.videos.fmtDur(v.dur)}`, rel));
+    if (!rel.length && q.k) kids.push(h("a", { class: "linkish", href: `#videos/k${q.k}`, target: "_blank", rel: "noopener", text: `Ver los vídeos de Kap. ${q.k} ↗` }));
+    return h("div", { class: "vrel" }, h("span", { class: "label", text: ok ? "Repasa el concepto en vídeo" : "¿No queda claro? Mira el vídeo" }), kids);
+  }
+
   /* ── shared runner ── view: container it renders into.
      run(pool, { count, tag, need, subtitle, backLabel, onBack, sortByLevel, onEnd({right,total,pct,bestStreak}) → {label,msg,actions,burst} }) */
   App.quizRunner = function (view) {
@@ -86,7 +95,7 @@
       setRider();
       const last = idx === qs.length - 1;
       fb.replaceChildren(h("div", { class: "feedback " + (ok ? "ok" : "no") },
-        h("b", { text: ok ? "Correcto" : "No exactamente" + (extra || "") }), h("span", { text: q.x }), srcBlock(q),
+        h("b", { text: ok ? "Correcto" : "No exactamente" + (extra || "") }), h("span", { text: q.x }), srcBlock(q), videoBlock(q, ok),
         h("div", { class: "row", style: { marginTop: "6px" } }, h("button", { class: "btn surf", type: "button", id: "quizNext", text: last ? "Ver resultado" : "Siguiente", onclick: () => { idx++; last ? end() : ask(); } }))));
       document.getElementById("quizNext").focus({ preventScroll: true });
     }

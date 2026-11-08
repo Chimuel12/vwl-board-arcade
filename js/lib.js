@@ -5,8 +5,9 @@
 
   function apply(e, attrs) {
     for (const [k, v] of Object.entries(attrs || {})) {
-      if (v == null || v === false) continue;
+      if (v == null || (v === false && !k.startsWith("aria-"))) continue;
       if (k === "text") e.textContent = v;
+      else if (k.startsWith("aria-")) e.setAttribute(k, String(v)); // aria-pressed="true"/"false", never ""
       else if (k === "html") e.innerHTML = v;
       else if (k.startsWith("on")) e.addEventListener(k.slice(2), v);
       else if (k === "style" && typeof v === "object") Object.assign(e.style, v);
@@ -253,6 +254,157 @@
   };
   App.loadRecentNews = (n = 30) => Promise.all(App.newsDays().slice(0, n).map(x => App.loadNewsDay(x.d)));
   App.fmtDay = d => /^\d{4}-\d{2}-\d{2}$/.test(d) ? new Date(d + "T12:00:00").toLocaleDateString("es-ES", { day: "numeric", month: "short", year: "numeric" }) : d;
+
+  /* ── concept videos (media/videos/NNN.mp4, manifest js/data/videos.js) ── */
+  /* Which concept videos fit a question? Every word of the concept's term must appear in the text
+     (light German stemming), acronyms like BIP/MC as whole words, formulas like "MR = MC" verbatim. */
+  const STOP = new Set("der die das den dem des ein eine einer eines und oder von vom für fürs mit als wenn wer was wie im in am an auf zu zum zur statt werden wird sich nicht ist sind gegen bei warum gute that".split(" "));
+  const LETTER = "A-Za-zÄÖÜäöüß";
+  const flat = s => s.toLowerCase().replace(/\s+/g, "").replace(/[−–—]/g, "-").replace(/[·×]/g, "*");
+  const stem = w => {
+    for (const suf of ["ungen", "ung", "en", "er", "es", "e", "n", "s"]) if (w.endsWith(suf) && w.length - suf.length >= 5) return w.slice(0, -suf.length);
+    return w;
+  };
+  function needles(str) {
+    if (str.includes("=")) return [{ f: flat(str), w: str.length }];
+    const out = [];
+    str.replace(/[…?!:;,()&]/g, " ").split(/[\s\-–—\/']+/).forEach(tok => {
+      tok = tok.replace(/\.$/, "");
+      if (/^[A-ZÄÖÜ]{2,5}$/.test(tok)) out.push({ re: new RegExp(`(^|[^${LETTER}])${tok}(?![${LETTER}])`), w: 3 });
+      else if (/\d/.test(tok)) out.push({ f: flat(tok), w: 2 });
+      else {
+        const w = tok.toLowerCase();
+        if (w.length >= 4 && !STOP.has(w) && !w.startsWith("vs")) out.push({ s: stem(w), w: w.length });
+      }
+    });
+    if (!out.length && str.trim().length >= 3) out.push({ f: flat(str), w: str.length });
+    return out;
+  }
+  // other ways the exercises name a concept (each entry: all of its words must appear)
+  const ALIAS = {
+    "Positive Ökonomik": ["positive Aussage"], "Normative Ökonomik": ["normativ"],
+    "Opportunitätskosten": ["entgangen"], "Budgetbeschränkung": ["Budgetgerade", "Budgetrestriktion"],
+    "Pro-Kopf-BIP als Maß": ["Durchschnittseinkommen"], "Durchschnittsprodukt der Arbeit": ["Arbeitsprodukt", "APL"],
+    "Kosten einer Technologie": ["Technik Lohn", "Technologie Lohn"], "Produktionstechnologie": ["technisch dominiert"],
+    "Optimale Wahl": ["Optimum", "optimale Kombination"], "Opportunitätskosten der Freizeit": ["Freizeit"],
+    "Substitutionseffekt": ["hypothetische Einkommen"], "Grenzrate der Substitution (GRS)": ["MRS"],
+    "Sequentielles Spiel": ["beobachtet Wahl", "sequentiell"], "Pareto-Effizienz": ["pareto-effizient", "pareto-optimal"],
+    "Zunehmende Skalenerträge": ["steigende Skalenerträge"], "Abnehmende Skalenerträge": ["fallende Skalenerträge", "sinkende Skalenerträge"],
+    "Preiselastizität der Nachfrage": ["Preiselastizität", "Nachfrageelastizität"], "Preisaufschlag (Markup)": ["Markup", "Aufschlag"],
+    "Deadweight Loss": ["Wohlfahrtsverlust", "DWL"], "Externer Effekt": ["Externalität", "Umweltkosten"],
+    "Positiver externer Effekt": ["positive Externalität"], "Okun's Gesetz": ["Arbeitslosenquote"],
+    "Inflationsrate berechnen": ["Inflationsrate", "Preissteigerung"], "Verbraucherpreisindex (VPI)": ["Warenkorb", "Preisindex"],
+    "Wer bezahlt Zölle?": ["Zoll", "Zölle"]
+  };
+  let index = null;
+  function videoIndex() {
+    if (!index) index = (window.VIDEOS || []).map(v => {
+      const main = v.term.replace(/\([^)]*\)/g, " ").trim();
+      const alts = [needles(main), ...(ALIAS[v.term] || []).map(needles)];
+      const acr = (v.term.match(/\(([A-ZÄÖÜ]{2,5})\)/) || [])[1];
+      if (acr) alts.push(needles(acr));
+      return { v, key: main.toLowerCase(), alts };
+    });
+    return index;
+  }
+  const pad3 = n => String(n).padStart(3, "0");
+  App.videos = {
+    all: () => window.VIDEOS || [],
+    byId: id => (window.VIDEOS || []).find(v => v.id === id),
+    src: v => `media/videos/${pad3(v.n)}.mp4`,
+    poster: v => `media/videos/${pad3(v.n)}.jpg`,
+    fmtDur: s => `${Math.floor(s / 60)}:${String(Math.round(s % 60)).padStart(2, "0")}`,
+    seen: () => App.store.get("videosSeen", {}),
+    /* videos whose concept appears in the text: same chapter first, then the most specific;
+       a general concept is dropped when a more specific one containing it also matched (Gleichgewicht ⊂ Nash-Gleichgewicht) */
+    related(text, limit = 2, ch) {
+      const raw = String(text), low = raw.toLowerCase(), fl = flat(raw);
+      const ok = nd => nd.re ? nd.re.test(raw) : nd.f ? fl.includes(nd.f) : low.includes(nd.s);
+      const hits = [];
+      videoIndex().forEach(x => {
+        const w = Math.max(0, ...x.alts.filter(alt => alt.every(ok)).map(alt => alt.reduce((a, nd) => a + nd.w, 0)));
+        if (w) hits.push({ ...x, w });
+      });
+      return hits.filter(a => !hits.some(b => b !== a && b.key.length > a.key.length && b.key.includes(a.key)))
+        .sort((a, b) => (b.v.ch === ch) - (a.v.ch === ch) || b.w - a.w)
+        .slice(0, limit).map(x => x.v);
+    },
+    button(v, label, list) {
+      return App.h("button", { class: "vbtn", type: "button", title: "Vídeo: " + v.term, onclick: e => { e.stopPropagation(); App.videos.open(v, list); } },
+        App.h("span", { class: "vplay", "aria-hidden": "true", text: "▶" }), App.h("span", { text: label || v.term }));
+    },
+    markSeen(v) {
+      const seen = App.videos.seen();
+      if (seen[v.id]) return;
+      seen[v.id] = Date.now(); App.store.set("videosSeen", seen);
+      App.store.set("best:videos", Object.keys(seen).length);
+    },
+    close: () => {},
+    /* modal player; list = the videos that "previous/next" walk through (default: all, in script order) */
+    open(v, list) {
+      App.videos.close();
+      list = list && list.length ? list : App.videos.all();
+      let idx = Math.max(0, list.findIndex(x => x.n === v.n));
+      const prevFocus = document.activeElement;
+      const { h } = App, total = App.videos.all().length;
+      const meta = h("span", { class: "label" }), title = h("b");
+      const closeBtn = h("button", { class: "vclose", type: "button", "aria-label": "Cerrar vídeo", text: "✕", onclick: () => close() });
+      const video = h("video", { controls: true, playsinline: true, preload: "auto" });
+      const prev = h("button", { class: "btn alt", type: "button", text: "← Anterior", onclick: () => go(-1) });
+      const next = h("button", { class: "btn alt", type: "button", text: "Siguiente →", onclick: () => go(1) });
+      const pos = h("span", { class: "label" });
+      const box = h("div", { class: "vbox", role: "dialog", "aria-modal": "true" },
+        h("div", { class: "vhead" }, h("div", { class: "stack", style: { gap: "2px", minWidth: "0" } }, meta, title), closeBtn),
+        video,
+        list.length > 1 ? h("div", { class: "row between" }, prev, pos, next) : null);
+      const modal = h("div", { class: "vmodal", onclick: e => { if (e.target === modal) close(); } }, box);
+      video.addEventListener("timeupdate", () => { if (video.duration && video.currentTime / video.duration >= 0.6) App.videos.markSeen(list[idx]); });
+      video.addEventListener("ended", () => { if (idx < list.length - 1) next.focus({ preventScroll: true }); });
+      function show() {
+        const cur = list[idx];
+        box.setAttribute("aria-label", "Vídeo: " + cur.term);
+        meta.textContent = `Kap. ${cur.ch} · Vídeo ${pad3(cur.n)} / ${total} · ${App.videos.fmtDur(cur.dur)}`;
+        title.textContent = cur.term;
+        video.poster = App.videos.poster(cur);
+        video.src = App.videos.src(cur);
+        video.play().catch(() => {});
+        prev.disabled = idx === 0; next.disabled = idx >= list.length - 1;
+        pos.textContent = `${idx + 1} / ${list.length}`;
+      }
+      function go(d) {
+        const j = idx + d;
+        if (j < 0 || j >= list.length) return;
+        idx = j; show();
+        if (document.activeElement && document.activeElement.disabled) (d > 0 ? prev : next).focus({ preventScroll: true });
+      }
+      function close() {
+        video.pause(); video.removeAttribute("src"); video.load();
+        modal.remove(); document.documentElement.style.overflow = "";
+        document.removeEventListener("keydown", onKey, true);
+        App.videos.close = () => {};
+        if (prevFocus && prevFocus.isConnected && prevFocus.focus) prevFocus.focus({ preventScroll: true });
+        window.dispatchEvent(new Event("videos-changed"));
+      }
+      function onKey(e) {
+        const onVideo = e.target === video;
+        if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); close(); }
+        else if (e.key === "Tab") { // keep focus inside the player
+          const f = [...box.querySelectorAll("button:not([disabled]), video")];
+          const i = f.indexOf(document.activeElement);
+          if (e.shiftKey ? i <= 0 : i === f.length - 1 || i < 0) { e.preventDefault(); f[e.shiftKey ? f.length - 1 : 0].focus(); }
+        }
+        else if (e.key === "ArrowRight" && !onVideo) { e.preventDefault(); go(1); }
+        else if (e.key === "ArrowLeft" && !onVideo) { e.preventDefault(); go(-1); }
+        else if (/^[1-9]$/.test(e.key) || e.key === "Enter" && !box.contains(e.target)) e.stopPropagation(); // keys never reach the game behind
+      }
+      App.videos.close = close;
+      document.addEventListener("keydown", onKey, true);
+      document.documentElement.style.overflow = "hidden";
+      document.body.append(modal);
+      show();
+      closeBtn.focus({ preventScroll: true });
+    }
+  };
 
   /* registration */
   App.register = meta => App.games.push(meta);

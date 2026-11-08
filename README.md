@@ -1,6 +1,8 @@
 # VWL Board Arcade
 
-Minijuegos para aprender **Einführung in die VWL** (Universität Stuttgart, Prof. Dr. Dietmar Fehr, Kap. 1–9) con casos de negocio del surf y del snowboard.
+Minijuegos para aprender **Einführung in die VWL** (Universität Stuttgart, Prof. Dr. Dietmar Fehr, Kap. 1–9) con casos de negocio del surf y del snowboard, y un vídeo explicativo en alemán para cada uno de los 247 conceptos del script.
+
+En línea: https://chimuel12.github.io/vwl-board-arcade/
 
 Todas las empresas y cifras son ficticias: Salzwasser Surf Co. (escuela y tienda en Ericeira), Gipfelbrett (fábrica de snowboards en Innsbruck), Swell Academy (escuela rival) y Alpenlift AG (estación de esquí).
 
@@ -8,6 +10,7 @@ Todas las empresas y cifras son ficticias: Salzwasser Surf Co. (escuela y tienda
 
 | Juego | Capítulo | Qué practicas |
 |---|---|---|
+| Videoteca | Kap 1–9 | 247 vídeos cortos (uno por concepto): búsqueda, filtro por capítulo y vídeos ya vistos |
 | Memory de conceptos | Kap 1–9 | 247 parejas Begriff–Erklärung · 9 niveles: de 4 cartas abiertas a 12 tapadas con máx. 2 errores |
 | Wave Quiz · 9 niveles | Kap 1–9 | 174 preguntas en 9 niveles de dificultad (más las de actualidad); 7/10 desbloquea el siguiente |
 | Actualidad | Kap 1–9 | 20 preguntas nuevas cada día a partir de noticias reales de surf, snowboard y tech, con la fuente enlazada |
@@ -37,6 +40,16 @@ Los niveles 2–9 se basan en los Übungsblätter 1–6, los Zusatzblätter 1–
 
 Desde el nivel 3 hay preguntas de respuesta numérica (se aceptan coma o punto). Las soluciones de la Altklausur para el DWL del monopolio en las versiones D y E usan una altura incorrecta (P_M − P_W en vez de P_M − MC); aquí se usa el cálculo correcto.
 
+## Vídeos explicativos
+
+Cada concepto del script (los mismos 247 Begriffe del Memory) tiene un reel vertical en alemán: pregunta inicial, definición, ejemplo de surf, snowboard o tecnología con una cifra animada y la idea clave para el examen.
+
+- **Videoteca** (`#videos`): todos los vídeos por capítulo, con búsqueda y marca de «visto» (cuenta como visto a partir del 60 %). Enlaces directos: `#videos/k3` (capítulo 3) y `#videos/42` (vídeo 42).
+- **Memory**: cada pareja encontrada tiene su botón «Ver vídeo» en la lista de la derecha.
+- **Wave Quiz y Actualidad**: tras responder, «¿No queda claro? Mira el vídeo» propone hasta dos vídeos de los conceptos que trata la pregunta (los términos se buscan en el enunciado, la explicación y la respuesta correcta; prioridad al mismo capítulo). Si no hay ninguno, enlaza los vídeos del capítulo.
+
+Archivos: `media/videos/NNN.mp4` (720×1280, H.264, ~1,3 MB) y `NNN.jpg` (portada), lista en `js/data/videos.js`. Los originales en 1080p se generan fuera del repositorio con el estudio de vídeo de [`studio/`](studio/README.md), que también crea estas copias web (`studio/publish_web.py`).
+
 ## Actualidad: preguntas diarias
 
 Cada día a las 07:00 (Berlín) una rutina de Claude en la nube busca noticias de surf, snowboard/esquí y tecnología y escribe 20 preguntas nuevas en alemán (7 surf, 7 snow, 6 tech, niveles 1–9, capítulos 1–9, al menos 4 numéricas), cada una con su fuente.
@@ -59,7 +72,7 @@ python3 -m http.server 8000
 
 y entra en http://localhost:8000.
 
-El progreso (récords y conceptos dominados) se guarda en `localStorage` del navegador.
+El progreso (récords, conceptos dominados y vídeos vistos) se guarda en `localStorage` del navegador.
 
 ## Estructura
 
@@ -67,11 +80,14 @@ El progreso (récords y conceptos dominados) se guarda en `localStorage` del nav
 index.html
 css/style.css
 js/lib.js              helpers: DOM, animaciones, partículas, gráficos SVG
-js/main.js             portada y navegación (#memory, #quiz, …)
+js/main.js             portada y navegación (#memory, #quiz, #videos/k3, …)
 js/data/concepts.js    247 parejas Begriff–Erklärung
 js/data/questions.js   nivel 1: preguntas aplicadas al sector
 js/data/levels.js      niveles 2–9 (Übungen + Altklausur)
 js/data/news/          actualidad: index.js + un archivo por día
+js/data/videos.js      lista de los 247 vídeos (generada por studio/publish_web.py)
+media/videos/          vídeos web NNN.mp4 + portadas NNN.jpg
+studio/                estudio de vídeo: guiones, render.py, publish_web.py
 tools/                 validador y especificación de la rutina diaria
 .github/workflows/     publicación (Pages) y fusión automática de las preguntas diarias
 js/games/*.js          un archivo por juego

@@ -39,17 +39,20 @@
     const mastery = App.store.get("mastery", {});
     const mastered = Object.values(mastery).filter(r => r.s >= 2).length;
     const total = window.CH.reduce((a, c) => a + c.p.length, 0);
-    const played = App.games.filter(g => App.best(g.bestKey || g.id) != null).length;
+    const games = App.games.filter(g => !g.nogame);
+    const played = games.filter(g => App.best(g.bestKey || g.id) != null).length;
+    const vids = App.videos.all(), seenN = vids.filter(v => App.videos.seen()[v.id]).length;
 
     const hero = h("section", { class: "hero" });
     hero.innerHTML = heroScene();
     hero.append(h("div", { class: "copy" },
       h("span", { class: "label", text: "Einführung in die VWL · Prof. Fehr · Kap. 1–9" }),
       h("h1", { html: "La VWL, sobre la <span>tabla</span>" }),
-      h("p", { class: "lede", text: "Siete minijuegos que aplican cada capítulo al negocio del surf y del snowboard: tiendas, escuelas, fábricas de tablas y estaciones de esquí." }),
+      h("p", { class: "lede", text: `${games.length} minijuegos que aplican cada capítulo al negocio del surf, del snowboard y de la tecnología: tiendas, escuelas, fábricas de tablas y estaciones de esquí. Y si un concepto no queda claro, su vídeo explicativo.` }),
       h("div", { class: "stats" },
         h("div", { class: "stat" }, h("span", { class: "label", text: "Conceptos dominados" }), h("b", { text: mastered + " / " + total })),
-        h("div", { class: "stat" }, h("span", { class: "label", text: "Juegos probados" }), h("b", { text: played + " / " + App.games.length }))
+        h("div", { class: "stat" }, h("span", { class: "label", text: "Juegos probados" }), h("b", { text: played + " / " + games.length })),
+        vids.length ? h("a", { class: "stat", href: "#videos", style: { textDecoration: "none", color: "inherit" } }, h("span", { class: "label", text: "Vídeos vistos ▶" }), h("b", { text: seenN + " / " + vids.length })) : null
       )
     ));
 
@@ -74,7 +77,7 @@
       grid);
   }
 
-  function game(g) {
+  function game(g, arg) {
     crumb.textContent = "/ " + g.title;
     document.title = g.title + " · VWL Board Arcade";
     const root = h("div", { class: "stack" });
@@ -85,15 +88,16 @@
         h("p", { text: g.intro || g.desc })),
       h("a", { href: "#", class: "btn alt", text: "← Todos los juegos", style: { textDecoration: "none" } }));
     view.replaceChildren(head, root);
-    cleanup = g.mount(root) || null;
+    cleanup = g.mount(root, arg) || null;
   }
 
   function route() {
     if (typeof cleanup === "function") { try { cleanup(); } catch (e) {} }
     cleanup = null;
-    const id = location.hash.replace("#", "");
+    App.videos.close();
+    const [id, arg] = location.hash.slice(1).split("/");
     const g = App.games.find(x => x.id === id);
-    g ? game(g) : home();
+    g ? game(g, arg) : home();
     window.scrollTo(0, 0);
   }
   window.addEventListener("hashchange", route);

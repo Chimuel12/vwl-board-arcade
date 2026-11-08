@@ -152,8 +152,14 @@
     }
     function renderLog() {
       log.replaceChildren();
-      if (!S.log.length) { log.append(h("div", { class: "empty", text: "Cada pareja encontrada aparece aquí con el texto completo para repasarla." })); return; }
-      S.log.forEach(x => { const p = BY[x.pid]; log.append(h("div", { class: "e" }, h("div", { class: "row between" }, h("b", { text: p.term }), h("span", { class: "label", text: "K" + p.ch + (x.bad ? " · repasar" : ""), style: x.bad ? { color: "var(--bad)" } : null })), h("p", { text: p.def }))); });
+      if (!S.log.length) { log.append(h("div", { class: "empty", text: "Cada pareja encontrada aparece aquí con el texto completo y su vídeo explicativo para repasarla." })); return; }
+      S.log.forEach(x => {
+        const p = BY[x.pid], v = App.videos.byId(x.pid);
+        log.append(h("div", { class: "e" },
+          h("div", { class: "row between" }, h("b", { text: p.term }), h("span", { class: "label", text: "K" + p.ch + (x.bad ? " · repasar" : ""), style: x.bad ? { color: "var(--bad)" } : null })),
+          h("p", { text: p.def }),
+          v ? h("div", { class: "row", style: { marginTop: "4px" } }, App.videos.button(v, `${x.bad ? "Repasar en vídeo" : "Ver vídeo"} · ${App.videos.fmtDur(v.dur)}`, S.log.map(y => App.videos.byId(y.pid)).filter(Boolean))) : null));
+      });
     }
     function finish() {
       const n = S.deck.length / 2;
