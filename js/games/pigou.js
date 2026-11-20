@@ -72,7 +72,7 @@
         s("g", {}, s("rect", { x: 30, y: 30, width: 90, height: 42, fill: "var(--rock)" }), s("rect", { x: 92, y: 8, width: 14, height: 26, fill: "var(--rock)" }), s("path", { d: "M30 30 l22-14 v14 l22-14 v14 l22-14 v14", fill: "var(--rock)" })),
         s("path", { d: "M120 62 h30 v14", stroke: "var(--muted)", "stroke-width": 6, fill: "none" }), plume, fishG,
         s("g", { transform: "translate(450 52)" }, s("path", { d: "M0 18h50l-8 10H8z", fill: "var(--sun)" }), s("line", { x1: 25, y1: 18, x2: 25, y2: -6, stroke: "var(--ink)", "stroke-width": 2 })));
-      left.replaceChildren(C.river ? scene : h("p", { class: "hintbox", text: C.e[0] < 0 ? "Externer Nutzen: Die soziale Grenzkostenkurve liegt UNTER der privaten. Ohne Eingriff wird zu wenig angeboten." : "Konstanter externer Schaden: MSC liegt parallel über MPC." }), P.svg);
+      left.replaceChildren(...(C.river ? [scene, P.svg] : [P.svg]));
 
       const k = { t: h("b", { class: "num" }), q: h("b"), rev: h("b"), ext: h("b"), dwl: h("b") };
       const kpi = (l, e) => h("div", { class: "kpi" }, h("span", { class: "label", text: l }), e);
@@ -135,12 +135,5 @@
     return () => stop();
   }
 
-  App.register({
-    id: "pigou", order: 6, title: "Laboratorio Pigou", levelsKey: "pigou",
-    desc: "9 niveles de externalidades: del río contaminado a daños constantes, subvenciones, curvas no lineales (Zusatzblatt 4) y el pago de Coase.",
-    intro: "Mueve el impuesto por unidad y observa la producción, el daño externo y el Deadweight Loss. El objetivo es que el coste privado coincida con el coste social. Desde el nivel 5 aparecen externalidades positivas (subvención) y curvas no lineales del Zusatzblatt 4.",
-    chapters: ["Kap 8"], sector: ["snow", "surf"],
-    art: () => `<svg viewBox="0 0 240 96" aria-hidden="true"><rect width="240" height="96" fill="var(--sky)"/><rect y="56" width="240" height="40" fill="var(--sea2)"/><rect x="20" y="24" width="56" height="34" fill="var(--rock)"/><rect x="60" y="8" width="10" height="20" fill="var(--rock)"/><path d="M76 50h18v10" stroke="var(--muted)" stroke-width="5" fill="none"/><path d="M94 62c30 2 60 10 146 6v10c-60 4-110-2-146-8z" fill="#7a5c2e" opacity=".75"/><path d="M150 82c4-4 9-4 12 0-3 4-8 4-12 0zm12 0 5-3v6z" fill="var(--surface)"/><text x="196" y="40" font-size="20" font-weight="700" fill="var(--bad)">€</text></svg>`,
-    mount
-  });
+  App.register({ id: "pigou", order: 6, title: "Laboratorio Pigou", levelsKey: "pigou", chapters: ["Kap 8"], mount });
 })();

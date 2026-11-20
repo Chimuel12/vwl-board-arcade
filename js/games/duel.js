@@ -75,7 +75,7 @@
       const draw = () => {
         const { m } = matrixEl(M, sel, k => { if (single) sel = new Set(sel.has(k) ? [] : [k]); else sel.has(k) ? sel.delete(k) : sel.add(k); draw(); });
         left.replaceChildren(h("div", { class: "row between label" }, h("span", { text: `Matriz ${n + 1} / ${PUZZLES}` }), h("span", { text: `Aciertos ${right}` })),
-          h("span", { class: "label", text: "Verde = tu pago (Salzwasser) · naranja = pago de Swell Academy" }), m);
+          h("div", { class: "legend" }, h("span", {}, h("i", { style: "background:var(--brand)" }), "Tú"), h("span", {}, h("i", { style: "background:var(--sun)" }), "Rival")), m);
       };
       draw();
       const task = { ne: "Marca todos los Nash-Gleichgewichte. Si no hay ninguno, no marques nada.", pareto: "Marca todas las celdas Pareto-effizient.", seq: "Tú decides primero, la rival ve tu jugada y responde. Marca el resultado del juego." }[L.kind];
@@ -146,12 +146,5 @@
     start();
   }
 
-  App.register({
-    id: "duel", order: 5, title: "Duelo en la playa", levelsKey: "duel",
-    desc: "9 niveles de teoría de juegos con matrices al azar: Nash, Pareto, Rückwärtsinduktion y un juego repetido contra una estrategia oculta.",
-    intro: "Dos escuelas de surf compiten en precios. Los niveles 1–8 generan matrices nuevas en cada partida: marca Nash-Gleichgewichte (2×2 hasta 3×3), celdas Pareto-effizient y resultados de juegos secuenciales. El nivel 9 es un juego repetido en el que tienes que adivinar la estrategia de la rival.",
-    chapters: ["Kap 5"], sector: ["surf"],
-    art: () => App.art.wave().replace("</svg>", `<g font-family="JetBrains Mono, monospace" font-weight="600" font-size="13"><rect x="64" y="12" width="52" height="30" rx="6" fill="var(--surface)"/><rect x="122" y="12" width="52" height="30" rx="6" fill="var(--surface)"/><rect x="64" y="46" width="52" height="30" rx="6" fill="var(--surface)"/><rect x="122" y="46" width="52" height="30" rx="6" fill="var(--okbg)" stroke="var(--ok)" stroke-width="2"/><text x="90" y="32" text-anchor="middle" fill="var(--ink)">5,5</text><text x="148" y="32" text-anchor="middle" fill="var(--ink)">1,7</text><text x="90" y="66" text-anchor="middle" fill="var(--ink)">7,1</text><text x="148" y="66" text-anchor="middle" fill="var(--ok)">3,3</text></g></svg>`),
-    mount
-  });
+  App.register({ id: "duel", order: 5, title: "Duelo en la playa", levelsKey: "duel", chapters: ["Kap 5"], mount });
 })();

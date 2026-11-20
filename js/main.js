@@ -1,93 +1,115 @@
-/* Router + hub. Each game registers {id, order, title, desc, chapters, sector, art, mount}. */
+/* Navigation, home and router. Each game registers {id, order, title, chapters, levelsKey?, nogame?, mount(root, arg)}.
+   Routes: #, #<game>, #<game>/<arg> (e.g. #videos/k3, #news/2026-11-20, #quiz/free). */
 (function () {
   const { h } = App;
   const view = document.getElementById("view");
-  const crumb = document.getElementById("crumb");
+  const nav = document.getElementById("nav");
   let cleanup = null;
 
-  function heroScene() {
-    // mountains (snow side) flow into the sea (surf side); waves drift, flakes fall
-    const flakes = Array.from({ length: 14 }, (_, i) => {
-      const x = 20 + ((i * 37) % 360), d = 6 + (i % 5) * 1.7, dl = -(i * 0.9);
-      return `<circle class="flake" cx="${x}" cy="0" r="${1.4 + (i % 3) * 0.6}" fill="var(--peak)" style="animation-duration:${d}s;animation-delay:${dl}s"/>`;
-    }).join("");
-    const wavePath = y => {
-      let d = `M0 ${y}`;
-      for (let x = 0; x < 2000; x += 200) d += ` c50 -18 100 -18 100 0 s50 18 100 0`;
-      return d + ` V400 H0 Z`;
-    };
-    return `<svg class="scene" viewBox="0 0 1200 400" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
-      <rect width="1200" height="400" fill="var(--sky)"/>
-      <circle cx="930" cy="90" r="46" fill="var(--sun)" opacity=".9"/>
-      <path d="M-20 400 L120 150 L190 230 L300 90 L430 260 L520 200 L640 330 L700 400Z" fill="var(--rock)"/>
-      <path d="M300 90 L335 138 L312 130 L296 150 L278 128 Z M120 150 L146 196 L128 186 L112 200 L98 190Z" fill="var(--peak)"/>
-      <path d="M-20 400 C120 330 260 300 420 320 C520 332 600 360 700 400Z" fill="var(--peak)" opacity=".95"/>
-      <g>${flakes}</g>
-      <g transform="translate(420 0)">
-        <path class="wave w3" d="${wavePath(250)}" fill="var(--sea1)"/>
-        <path class="wave w2" d="${wavePath(290)}" fill="var(--sea2)"/>
-        <path class="wave" d="${wavePath(330)}" fill="var(--sea3)"/>
-      </g>
-      <rect width="1200" height="400" fill="url(#heroFade)"/>
-      <defs><linearGradient id="heroFade" x1="0" y1="0" x2="0" y2="1"><stop offset=".35" stop-color="var(--sky)" stop-opacity="0"/><stop offset="1" stop-color="var(--sky)" stop-opacity=".55"/></linearGradient></defs>
-    </svg>`;
+  // icon and colour of each section (the colour fills its round icon)
+  const META = {
+    home: { icon: "home", label: "Inicio" },
+    quiz: { icon: "quiz", color: "#2f6af5", label: "Quiz" },
+    memory: { icon: "memory", color: "#5a5cf0", label: "Memory" },
+    videos: { icon: "videos", color: "#e23d8f", label: "Vídeos" },
+    news: { icon: "news", color: "#ff6b3d", label: "Hoy" },
+    market: { icon: "market", color: "#0a9e96" },
+    pricing: { icon: "pricing", color: "#e89a0c" },
+    duel: { icon: "duel", color: "#7b5cff" },
+    pigou: { icon: "pigou", color: "#12a150" },
+    advantage: { icon: "advantage", color: "#0b9bd8" }
+  };
+  const PRIMARY = ["home", "quiz", "memory", "videos", "news"];
+  const QUIZ_PASS = 7;
+  const meta = id => META[id] || META.quiz;
+  const games = () => App.games.slice().sort((a, b) => a.order - b.order);
+  const iconCircle = (id, size = 22) => h("span", { class: "ic", style: `--c:${meta(id).color}`, html: App.icon(meta(id).icon, size) });
+  const ring = (v, max) => `<svg class="ring" viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="15" class="rb"/>${v > 0 ? `<circle cx="18" cy="18" r="15" class="rf" stroke-dasharray="${(v / max * 94.25).toFixed(1)} 94.25" transform="rotate(-90 18 18)"/>` : ""}</svg>`;
+
+  function buildNav() {
+    const link = (id, label, cls) => h("a", { class: "nav" + (cls || ""), href: id === "home" ? "#" : "#" + id, "data-id": id },
+      h("span", { class: "ni", html: App.icon(meta(id).icon, 22) }), h("span", { class: "nl", text: label }));
+    nav.replaceChildren(
+      h("a", { class: "brand", href: "#", "aria-label": "Board Arcade, inicio" }, h("i", { html: App.icon("wave", 18) }), h("span", { text: "Board Arcade" })),
+      ...PRIMARY.map(id => link(id, META[id].label)),
+      h("div", { class: "navsep", text: "Juegos" }),
+      ...games().filter(g => !PRIMARY.includes(g.id)).map(g => link(g.id, g.title, " sec")));
+  }
+  function markNav(id) {
+    nav.querySelectorAll(".nav").forEach(a => a.dataset.id === id ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current"));
+  }
+
+  const quizPassed = () => Object.values(App.store.get("levels", {})).filter(r => r.best >= QUIZ_PASS).length;
+  function levelsOf(g) {
+    if (g.id === "quiz") return quizPassed();
+    return g.levelsKey ? App.levels.passed(g.levelsKey) : null;
   }
 
   function home() {
-    crumb.textContent = "";
     document.title = "VWL Board Arcade";
+    markNav("home");
+    const lvGames = games().filter(g => levelsOf(g) != null);
+    const passed = lvGames.reduce((a, g) => a + levelsOf(g), 0), max = lvGames.length * 9;
     const mastery = App.store.get("mastery", {});
-    const mastered = Object.values(mastery).filter(r => r.s >= 2).length;
-    const total = window.CH.reduce((a, c) => a + c.p.length, 0);
-    const games = App.games.filter(g => !g.nogame);
-    const played = games.filter(g => App.best(g.bestKey || g.id) != null).length;
-    const vids = App.videos.all(), seenN = vids.filter(v => App.videos.seen()[v.id]).length;
+    const mastered = Object.values(mastery).filter(r => r.s >= 2).length, concepts = window.CH.reduce((a, c) => a + c.p.length, 0);
+    const vids = App.videos.all(), seen = App.videos.seen(), unseen = vids.filter(v => !seen[v.id]);
+    const days = App.newsDays(), newsBest = App.store.get("newsBest", {});
 
-    const hero = h("section", { class: "hero" });
-    hero.innerHTML = heroScene();
-    hero.append(h("div", { class: "copy" },
-      h("span", { class: "label", text: "Einführung in die VWL · Prof. Fehr · Kap. 1–9" }),
-      h("h1", { html: "La VWL, sobre la <span>tabla</span>" }),
-      h("p", { class: "lede", text: `${games.length} minijuegos que aplican cada capítulo al negocio del surf, del snowboard y de la tecnología: tiendas, escuelas, fábricas de tablas y estaciones de esquí. Y si un concepto no queda claro, su vídeo explicativo.` }),
-      h("div", { class: "stats" },
-        h("div", { class: "stat" }, h("span", { class: "label", text: "Conceptos dominados" }), h("b", { text: mastered + " / " + total })),
-        h("div", { class: "stat" }, h("span", { class: "label", text: "Juegos probados" }), h("b", { text: played + " / " + games.length })),
-        vids.length ? h("a", { class: "stat", href: "#videos", style: { textDecoration: "none", color: "inherit" } }, h("span", { class: "label", text: "Vídeos vistos ▶" }), h("b", { text: seenN + " / " + vids.length })) : null
-      )
-    ));
+    const balance = h("section", { class: "balance", "aria-label": "Tu progreso" },
+      h("span", { class: "bl-label", text: "Niveles superados" }),
+      h("div", { class: "bl-num" }, h("b", { text: passed }), h("span", { text: "/ " + max })),
+      h("div", { class: "bl-bar" }, h("i", { style: { width: (max ? passed / max * 100 : 0) + "%" } })),
+      h("div", { class: "bl-pills" },
+        h("a", { href: "#memory", text: `${mastered} / ${concepts} conceptos` }),
+        vids.length ? h("a", { href: "#videos", text: `${vids.length - unseen.length} / ${vids.length} vídeos` }) : null));
 
-    const grid = h("section", { class: "grid", "aria-label": "Minijuegos" });
-    App.games.slice().sort((a, b) => a.order - b.order).forEach(g => {
-      let best = App.best(g.bestKey || g.id);
-      if (g.levelsKey) { const n = App.levels.passed(g.levelsKey); best = n || (App.best(g.id) != null ? 0 : null); }
-      const ic = h("div", { class: "ic", html: g.art() });
-      grid.append(h("a", { class: "gcard", href: "#" + g.id },
-        ic,
-        h("div", { class: "stack", style: { gap: "6px" } }, h("h3", { text: g.title }), h("p", { text: g.desc })),
-        h("div", { class: "foot" },
-          h("div", { class: "pills" },
-            g.chapters.map(c => h("span", { class: "pill", text: c })),
-            g.sector.map(s => h("span", { class: "pill " + s, text: App.TOPICS[s] || s }))),
-          h("span", { class: "best", html: best == null ? "nuevo" : (g.levelsKey ? `niveles <b>${best}/9</b>` : g.bestLabel ? g.bestLabel(best) : "récord <b>" + best + "</b>") })
-        )));
-    });
+    const last = App.store.get("lastGame", "quiz");
+    const act = (label, iconName, color, attrs) => h(attrs.href ? "a" : "button", Object.assign({ class: "act" }, attrs.href ? {} : { type: "button" }, attrs),
+      h("span", { class: "ic", style: `color:${color}`, html: App.icon(iconName, 24) }), h("span", { text: label }));
+    const actions = h("div", { class: "actions" },
+      act("Seguir", "resume", meta(last).color, { href: "#" + (App.games.some(g => g.id === last) ? last : "quiz") }),
+      act("Repaso", "shuffle", META.quiz.color, { href: "#quiz/free" }),
+      act("Vídeo", "videos", META.videos.color, vids.length ? { onclick: () => App.videos.open(unseen[0] || vids[0], unseen.length ? unseen : vids) } : { href: "#videos" }),
+      act("Hoy", "news", META.news.color, { href: days.length ? "#news/" + days[0].d : "#news" }));
 
-    view.replaceChildren(hero,
-      h("div", { class: "row between" }, h("h2", { text: "Elige un juego" }), h("span", { class: "label", text: "Empresas y cifras ficticias" })),
-      grid);
+    const gameList = h("section", { class: "panel list", "aria-label": "Juegos" },
+      h("div", { class: "lh" }, h("h2", { text: "Juegos" })),
+      games().filter(g => !["videos", "news"].includes(g.id)).map(g => {
+        const v = levelsOf(g);
+        return h("a", { class: "li", href: "#" + g.id }, iconCircle(g.id),
+          h("span", { class: "tx" }, h("b", { text: g.title }), h("span", { text: (g.chapters || []).join(", ") + (v != null ? ` · ${v}/9` : "") })),
+          h("span", { class: "rt", html: v != null ? ring(v, 9) : "" }));
+      }));
+
+    const newsList = h("section", { class: "panel list", "aria-label": "Actualidad" },
+      h("div", { class: "lh" }, h("h2", { text: "Actualidad" }), h("a", { href: "#news", text: "Todo" })),
+      days.length ? days.slice(0, 3).map(d => h("a", { class: "li", href: "#news/" + d.d }, iconCircle("news"),
+        h("span", { class: "tx" }, h("b", { text: App.fmtDay(d.d) }), h("span", { text: d.title })),
+        h("span", { class: "rt" }, newsBest[d.d] != null ? h("span", { text: newsBest[d.d] + " %" }) : h("span", { class: "label", text: d.n }), h("span", { class: "chev", html: App.icon("next", 18) }))))
+        : h("div", { class: "empty", text: "—" }));
+
+    const shelf = (unseen.length ? unseen : vids).slice(0, 12);
+    const videoRow = vids.length ? h("section", { class: "panel list", "aria-label": "Vídeos" },
+      h("div", { class: "lh" }, h("h2", { text: "Vídeos" }), h("a", { href: "#videos", text: "Todo" })),
+      h("div", { class: "scroller" }, shelf.map(v => h("button", { class: "vmini", type: "button", "aria-label": "Vídeo: " + v.term, onclick: () => App.videos.open(v, shelf) },
+        h("img", { src: App.videos.poster(v), alt: "", loading: "lazy", width: 112, height: 199 }), h("span", { lang: "de", text: v.term }))))) : null;
+
+    view.replaceChildren(h("div", { class: "home" },
+      h("div", { class: "col" }, balance, actions, gameList),
+      h("div", { class: "col" }, newsList, videoRow)));
   }
 
   function game(g, arg) {
-    crumb.textContent = "/ " + g.title;
     document.title = g.title + " · VWL Board Arcade";
+    markNav(g.id);
+    if (!g.nogame && g.id !== "news") App.store.set("lastGame", g.id);
     const root = h("div", { class: "stack" });
-    const head = h("header", { class: "ghead" },
-      h("div", { class: "t" },
-        h("div", { class: "pills" }, g.chapters.map(c => h("span", { class: "pill", text: c })), g.sector.map(s => h("span", { class: "pill " + s, text: App.TOPICS[s] || s }))),
-        h("h1", { text: g.title, style: { fontSize: "clamp(26px,4vw,38px)" } }),
-        h("p", { text: g.intro || g.desc })),
-      h("a", { href: "#", class: "btn alt", text: "← Todos los juegos", style: { textDecoration: "none" } }));
-    view.replaceChildren(head, root);
+    view.replaceChildren(
+      h("header", { class: "pagehead" },
+        h("a", { href: "#", class: "back", "aria-label": "Inicio", html: App.icon("back", 20) }),
+        h("h1", { text: g.title }),
+        g.chapters ? h("span", { class: "pill", text: g.chapters.join(", ") }) : null),
+      root);
     cleanup = g.mount(root, arg) || null;
   }
 
@@ -100,6 +122,7 @@
     g ? game(g, arg) : home();
     window.scrollTo(0, 0);
   }
+  buildNav();
   window.addEventListener("hashchange", route);
   route();
   App.loadRecentNews(30); // news questions also feed the Wave Quiz levels

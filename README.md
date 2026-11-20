@@ -4,6 +4,8 @@ Minijuegos para aprender **Einführung in die VWL** (Universität Stuttgart, Pro
 
 En línea: https://chimuel12.github.io/vwl-board-arcade/
 
+Interfaz de estilo app bancaria: tarjetas blancas sobre fondo gris, cifras grandes, iconos redondos y controles en forma de píldora; barra lateral en el ordenador y barra de pestañas en el móvil, en modo claro y oscuro. En pantalla solo hay tareas, soluciones y controles: las reglas de cada nivel están en el texto emergente de su botón.
+
 Todas las empresas y cifras son ficticias: Salzwasser Surf Co. (escuela y tienda en Ericeira), Gipfelbrett (fábrica de snowboards en Innsbruck), Swell Academy (escuela rival) y Alpenlift AG (estación de esquí).
 
 ## Juegos
@@ -11,8 +13,8 @@ Todas las empresas y cifras son ficticias: Salzwasser Surf Co. (escuela y tienda
 | Juego | Capítulo | Qué practicas |
 |---|---|---|
 | Videoteca | Kap 1–9 | 247 vídeos cortos (uno por concepto): búsqueda, filtro por capítulo y vídeos ya vistos |
-| Memory de conceptos | Kap 1–9 | 247 parejas Begriff–Erklärung · 9 niveles: de 4 cartas abiertas a 12 tapadas con máx. 2 errores |
-| Wave Quiz · 9 niveles | Kap 1–9 | 174 preguntas en 9 niveles de dificultad (más las de actualidad); 7/10 desbloquea el siguiente |
+| Memory | Kap 1–9 | 247 parejas Begriff–Erklärung · 9 niveles: de 4 cartas abiertas a 12 tapadas con máx. 2 errores |
+| Wave Quiz | Kap 1–9 | 174 preguntas en 9 niveles de dificultad (más las de actualidad); 7/10 desbloquea el siguiente |
 | Actualidad | Kap 1–9 | 20 preguntas nuevas cada día a partir de noticias reales de surf, snowboard y tech, con la fuente enlazada |
 | Board-Markt | Kap 7 | 9 niveles: noticias (una o dos a la vez), nuevo P*, precio máximo, rentas, Skiausrüstung (Übung 6) |
 | Preis-Setter | Kap 6 | 9 niveles: MR = MC con ayuda, mercados al azar, MC creciente, DWL, Markup, Übungsblatt 5 |
@@ -55,6 +57,7 @@ Archivos: `media/videos/NNN.mp4` (720×1280, H.264, ~1,3 MB) y `NNN.jpg` (portad
 Cada día a las 07:00 (Berlín) una rutina de Claude en la nube busca noticias de surf, snowboard/esquí y tecnología y escribe 20 preguntas nuevas en alemán (7 surf, 7 snow, 6 tech, niveles 1–9, capítulos 1–9, al menos 4 numéricas), cada una con su fuente.
 
 - Especificación de la rutina: [`tools/DAILY_NEWS.md`](tools/DAILY_NEWS.md)
+- Investigación: con `WebSearch` en modo `extended`. El entorno en la nube no deja abrir la mayoría de webs de noticias, así que un dato cuenta como verificado cuando aparece en el texto de un resultado de búsqueda con fecha.
 - Datos: `js/data/news/index.js` (lista de días) y un archivo por día `js/data/news/AAAA-MM-DD.js`
 - Validación: `node tools/validate-news.mjs` comprueba formato, fuentes, reparto y que cada cálculo (`calc`) dé el resultado (`n`).
 - Publicación: la rutina hace push a una rama `claude/…`. La Action [`news-merge.yml`](.github/workflows/news-merge.yml) la valida y, si solo cambia `js/data/news/`, la fusiona en `main`; [`pages.yml`](.github/workflows/pages.yml) publica la web.
@@ -80,7 +83,7 @@ El progreso (récords, conceptos dominados y vídeos vistos) se guarda en `local
 index.html
 css/style.css
 js/lib.js              helpers: DOM, animaciones, partículas, gráficos SVG
-js/main.js             portada y navegación (#memory, #quiz, #videos/k3, …)
+js/main.js             portada y navegación (#memory, #quiz/free, #news/AAAA-MM-DD, #videos/k3, …)
 js/data/concepts.js    247 parejas Begriff–Erklärung
 js/data/questions.js   nivel 1: preguntas aplicadas al sector
 js/data/levels.js      niveles 2–9 (Übungen + Altklausur)

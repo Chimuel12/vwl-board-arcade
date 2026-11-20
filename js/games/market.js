@@ -119,7 +119,7 @@
     // ── levels 1–4
     function roundNews() {
       const ev = deck[idx], base = genMarket(), C = chart(100, 1000, "Menge Q (Tsd. Boards)");
-      C.draw(base); left.replaceChildren(head, progress, C.svg, h("p", { class: "label", text: "Líneas grises = mercado antes de la noticia" }));
+      C.draw(base); left.replaceChildren(head, progress, C.svg);
       const shift = Math.round((base.a - base.c) * 0.32 / 10) * 10;
       const target = { ...base }; if (ev.curve === "D") target.a += ev.dir * shift; else target.c -= ev.dir * shift;
       const e0 = eqOf(base), e1 = eqOf(target);
@@ -145,7 +145,7 @@
       const m = App.pick(["Snowboards", "Surfboards"]);
       const evD = App.pick(EVENTS.filter(e => e.m === m && e.curve === "D")), evS = App.pick(EVENTS.filter(e => e.m === m && e.curve === "S"));
       const base = genMarket(), C = chart(100, 1000, "Menge Q (Tsd. Boards)"); C.draw(base);
-      left.replaceChildren(head, progress, C.svg, h("p", { class: "label", text: "Líneas grises = mercado antes de las noticias" }));
+      left.replaceChildren(head, progress, C.svg);
       const span = base.a - base.c, target = { ...base };
       target.a += evD.dir * Math.round(span * App.pick([0.18, 0.28, 0.38]) / 10) * 10;
       target.c -= evS.dir * Math.round(span * App.pick([0.18, 0.28, 0.38]) / 10) * 10;
@@ -246,12 +246,5 @@
     return () => stop();
   }
 
-  App.register({
-    id: "market", order: 3, title: "Board-Markt", levelsKey: "market",
-    desc: "9 niveles: de leer noticias del sector a calcular equilibrios, precios máximos, rentas y el caso de la Skiausrüstung.",
-    intro: "Los niveles 1–5 entrenan la intuición: ¿qué curva mueve cada noticia? Los niveles 6–9 piden cálculos como en la Übung 6: nuevo P*, escasez con un precio máximo, Konsumenten- y Produzentenrente, y el mercado de Skiausrüstung con Y y T. Los números cambian en cada ronda.",
-    chapters: ["Kap 7"], sector: ["surf", "snow"],
-    art: () => `<svg viewBox="0 0 240 96" aria-hidden="true"><rect width="240" height="96" fill="var(--sky)"/><path d="M60 12v72h130" stroke="var(--ink)" stroke-width="2" fill="none"/><path d="M70 18L180 80" stroke="var(--snow)" stroke-width="4" stroke-linecap="round"/><path d="M70 80L180 18" stroke="var(--sun)" stroke-width="4" stroke-linecap="round"/><path d="M92 18L200 78" stroke="var(--snow)" stroke-width="2.5" stroke-dasharray="5 5" opacity=".7"/><circle cx="125" cy="49" r="6" fill="var(--ink)"/></svg>`,
-    mount
-  });
+  App.register({ id: "market", order: 3, title: "Board-Markt", levelsKey: "market", chapters: ["Kap 7"], mount });
 })();

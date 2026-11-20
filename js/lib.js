@@ -106,7 +106,7 @@
   /* SVG plot with axes, grid and clipped drawing layer */
   let clipId = 0;
   App.plot = o => {
-    const w = o.w || 560, h = o.h || 360, m = Object.assign({ l: 58, r: 18, t: 16, b: 46 }, o.m || {});
+    const w = o.w || 560, h = o.h || 360, m = Object.assign({ l: 58, r: 18, t: o.ylabel ? 34 : 16, b: 46 }, o.m || {});
     const X = v => m.l + (v / o.xmax) * (w - m.l - m.r);
     const Y = v => h - m.b - (v / o.ymax) * (h - m.t - m.b);
     const id = "clip" + ++clipId;
@@ -125,7 +125,7 @@
     svg.append(App.s("line", { class: "axis", x1: m.l, y1: h - m.b, x2: w - m.r, y2: h - m.b }));
     svg.append(App.s("line", { class: "axis", x1: m.l, y1: m.t, x2: m.l, y2: h - m.b }));
     if (o.xlabel) svg.append(App.s("text", { class: "ttl", x: w - m.r, y: h - 8, "text-anchor": "end", text: o.xlabel }));
-    if (o.ylabel) svg.append(App.s("text", { class: "ttl", x: m.l - 50, y: m.t - 4 > 8 ? m.t - 4 : 10, text: o.ylabel }));
+    if (o.ylabel) svg.append(App.s("text", { class: "ttl", x: Math.max(4, m.l - 50), y: Math.max(12, m.t - 16), text: o.ylabel }));
     const back = App.s("g", { "clip-path": `url(#${id})` });
     const mid = App.s("g", { "clip-path": `url(#${id})` });
     const front = App.s("g");
@@ -151,26 +151,27 @@
   };
   App.stars = n => "★".repeat(n) + "☆".repeat(3 - n);
 
-  /* defs: [{name, desc}] · onPick(n) starts that level */
+  /* defs: [{name, desc}] · onPick(n) starts that level; desc is only the button tooltip */
   App.levelBar = (id, defs, onPick) => {
-    const box = App.h("div", { class: "panel stack lvbar" });
+    const box = App.h("div", { class: "panel lvbar" });
     let cur = App.store.get("lvcur:" + id, 1);
     function render() {
       const u = App.levels.unlocked(id, defs.length), p = App.levels.get(id);
       if (cur > u) cur = u;
       const btns = defs.map((d, i) => {
         const n = i + 1, locked = n > u, st = p[n] || 0;
-        return App.h("button", { type: "button", class: "lvb" + (n === cur ? " on" : "") + (st ? " won" : ""), disabled: locked, "aria-pressed": n === cur, "aria-label": `Nivel ${n} ${d.name}` + (locked ? " (bloqueado)" : ""), title: d.name,
-          onclick: () => { cur = n; App.store.set("lvcur:" + id, n); render(); onPick(n); } },
-          App.h("span", { class: "n", text: locked ? "🔒" : n }), App.h("span", { class: "s", text: locked ? "" : App.stars(st) }));
+        return App.h("button", { type: "button", class: "lvb" + (n === cur ? " on" : "") + (st ? " won" : ""), disabled: locked, "aria-pressed": n === cur,
+          "aria-label": `Nivel ${n} ${d.name}` + (locked ? " (bloqueado)" : st ? ` (${st} de 3 estrellas)` : ""), title: `${n} · ${d.name} — ${d.desc}`,
+          html: locked ? App.icon("lock", 16) : String(n),
+          onclick: () => { cur = n; App.store.set("lvcur:" + id, n); render(); onPick(n); } });
       });
-      const d = defs[cur - 1];
+      const d = defs[cur - 1], open = App.levels.open();
       box.replaceChildren(
-        App.h("div", { class: "row between" },
-          App.h("span", { class: "label", text: "Niveles · supera uno para abrir el siguiente" }),
-          App.h("button", { class: "linkish", type: "button", text: App.levels.open() ? "Volver a bloquear niveles" : "Desbloquear todos", onclick: () => { App.store.set("levelsOpen", !App.levels.open()); render(); onPick(cur); } })),
-        App.h("div", { class: "lvrow" }, btns),
-        App.h("div", { class: "lvinfo" }, App.h("b", { text: `Nivel ${cur} · ${d.name}` }), App.h("span", { text: d.desc })));
+        App.h("div", { class: "lvtop" },
+          App.h("div", { class: "lvname" }, App.h("b", { text: `Nivel ${cur} · ${d.name}` }), App.h("span", { class: "st", text: App.stars(p[cur] || 0) })),
+          App.h("button", { class: "iconbtn", type: "button", title: open ? "Volver a bloquear niveles" : "Desbloquear todos los niveles", "aria-label": open ? "Volver a bloquear niveles" : "Desbloquear todos los niveles", "aria-pressed": open,
+            html: App.icon(open ? "unlock" : "lock", 18), onclick: () => { App.store.set("levelsOpen", !open); render(); onPick(cur); } })),
+        App.h("div", { class: "lvrow" }, btns));
     }
     render();
     return {
@@ -191,7 +192,7 @@
     actions.push(App.h("button", { class: "btn " + (passed && !last ? "alt" : "surf"), type: "button", text: "Repetir nivel", onclick: retry }));
     return App.h("div", { class: "feedback " + (passed ? "ok" : "no"), style: { gridColumn: "1/-1" } },
       App.h("b", { text: `${title} · ${App.stars(stars)}` }),
-      App.h("span", { text: text + (passed ? (last ? " ¡Último nivel superado!" : ` Nivel ${bar.cur + 1} desbloqueado.`) : " Aún no alcanza para pasar de nivel.") }),
+      text ? App.h("span", { text }) : null,
       App.h("div", { class: "row", style: { marginTop: "6px" } }, actions));
   };
 
@@ -410,10 +411,26 @@
   App.register = meta => App.games.push(meta);
 
   /* reusable illustrations */
-  App.art = {
-    wave: (c1 = "var(--sea2)", c2 = "var(--sea3)") =>
-      `<svg viewBox="0 0 240 96" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="240" height="96" fill="var(--sky)"/><circle cx="196" cy="26" r="13" fill="var(--sun)" opacity=".85"/><path d="M0 60c30-14 50-14 80 0s50 14 80 0 50-14 80 0v36H0z" fill="${c1}"/><path d="M0 74c30-10 50-10 80 0s50 10 80 0 50-10 80 0v22H0z" fill="${c2}"/></svg>`,
-    peak: () =>
-      `<svg viewBox="0 0 240 96" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="240" height="96" fill="var(--sky)"/><path d="M0 96L60 30l30 30 40-48 60 60 50-20v44z" fill="var(--rock)"/><path d="M60 30l14 15-10-2-12 8zM130 12l18 22-14-4-10 9-8-5z" fill="var(--peak)"/><path d="M0 96c60-20 140-26 240-12v12z" fill="var(--peak)"/></svg>`
+  /* line icons, 24×24, drawn with currentColor */
+  const ICONS = {
+    wave: '<path d="M3 16c3-3.2 6-3.2 9 0s6 3.2 9 0"/><path d="m5.5 10.5 4-4.5 3.5 3.5 2.5-2.5 3 3"/>',
+    home: '<path d="M3.5 10.5 12 3.5l8.5 7V19a1.5 1.5 0 0 1-1.5 1.5h-4.5v-6h-5v6H5A1.5 1.5 0 0 1 3.5 19z"/>',
+    quiz: '<circle cx="12" cy="12" r="9"/><path d="M9.6 9.4a2.5 2.5 0 1 1 3.4 2.3c-.6.3-1 .8-1 1.5v.4"/><path d="M12 16.9v.2"/>',
+    memory: '<rect x="3.5" y="7" width="11" height="13.5" rx="2.5"/><path d="M8.5 3.5H18A2.5 2.5 0 0 1 20.5 6v10.5"/>',
+    videos: '<rect x="3" y="4.5" width="18" height="15" rx="3.5"/><path d="M10 9.2v5.6l4.8-2.8z" fill="currentColor" stroke="none"/>',
+    news: '<path d="M4 5.5A1.5 1.5 0 0 1 5.5 4h10A1.5 1.5 0 0 1 17 5.5V19a2 2 0 0 0 2 2H6a2 2 0 0 1-2-2z"/><path d="M17 9h2.5a1 1 0 0 1 1 1v9a2 2 0 0 1-2 2M8 8.5h5M8 12.5h5M8 16.5h3"/>',
+    market: '<path d="M4 4v16h16"/><path d="m7.5 7 10 10M7.5 17l10-10"/>',
+    pricing: '<path d="M3.5 12.3V4.5a1 1 0 0 1 1-1h7.8l8.2 8.2a1.5 1.5 0 0 1 0 2.1l-6.6 6.6a1.5 1.5 0 0 1-2.1 0z"/><circle cx="8" cy="8" r="1.4"/>',
+    duel: '<rect x="3.5" y="3.5" width="7.5" height="7.5" rx="2"/><rect x="13" y="3.5" width="7.5" height="7.5" rx="2"/><rect x="3.5" y="13" width="7.5" height="7.5" rx="2"/><rect x="13" y="13" width="7.5" height="7.5" rx="2"/>',
+    pigou: '<path d="M3 20.5v-9l5 3.2v-3.2l5 3.2V6.5h3V4h3v16.5z"/>',
+    advantage: '<path d="M4 8h14l-3.5-3.5M20 16H6l3.5 3.5"/>',
+    resume: '<circle cx="12" cy="12" r="9"/><path d="M10.3 8.6v6.8l5.3-3.4z" fill="currentColor" stroke="none"/>',
+    shuffle: '<path d="M3 7h3.2c2 0 3.2 1 4.3 2.8l2.6 4.6c1 1.7 2.2 2.6 4.2 2.6H21M3 17h3.2c1.4 0 2.3-.5 3.1-1.3M14.4 8.3C15.2 7.5 16 7 17.4 7H21M18 4l3 3-3 3M18 14l3 3-3 3"/>',
+    lock: '<rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8.5 10.5v-3a3.5 3.5 0 0 1 7 0v3"/>',
+    unlock: '<rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8.5 10.5v-3a3.5 3.5 0 0 1 6.8-1.2"/>',
+    back: '<path d="m14.5 5.5-6.5 6.5 6.5 6.5"/>',
+    next: '<path d="m9.5 5.5 6.5 6.5-6.5 6.5"/>',
+    search: '<circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/>'
   };
+  App.icon = (name, size = 22) => `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name] || ""}</svg>`;
 })();

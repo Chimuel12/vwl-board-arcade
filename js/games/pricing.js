@@ -88,7 +88,6 @@
         h("div", { class: "case" }, h("span", { class: "who", text: C.who }), h("p", { text: C.t })),
         h("div", { class: "range" }, h("div", { class: "row between" }, h("span", { class: "label", text: "Tu precio" }), priceOut), range),
         h("div", { class: "kpis" }, kpi("Absatz Q", k.q), kpi("Umsatz", k.rev), kpiPi, kpi("Elastizität ε", k.eps), kpi("Markup (P−MC)/P", k.mu)),
-        h("p", { style: { color: "var(--muted)", fontSize: "14.5px" }, text: `Fixkosten ${App.eur(C.F)} ya restados. Verde = Produzentenrente (P − MC). Azul = Konsumentenrente.` }),
         h("div", { class: "row" }, lockBtn), fb);
 
       function lock() {
@@ -123,12 +122,5 @@
     return () => stop();
   }
 
-  App.register({
-    id: "pricing", order: 4, title: "Preis-Setter", levelsKey: "pricing",
-    desc: "9 niveles con poder de mercado: de casos guiados a costes marginales crecientes, DWL, Markup y el ejercicio del Übungsblatt 5.",
-    intro: "Eres una empresa con Marktmacht. Mueve el precio y observa unidades vendidas, beneficio, elasticidad y Markup. En los niveles altos los costes marginales suben con la cantidad y además calculas el DWL, el Markup o el beneficio máximo.",
-    chapters: ["Kap 6"], sector: ["snow", "surf"],
-    art: () => `<svg viewBox="0 0 240 96" aria-hidden="true"><rect width="240" height="96" fill="var(--sky)"/><path d="M60 12v72h130" stroke="var(--ink)" stroke-width="2" fill="none"/><rect x="60" y="38" width="55" height="22" fill="var(--ok)" opacity=".3"/><path d="M60 16L180 84" stroke="var(--snow)" stroke-width="4" stroke-linecap="round"/><path d="M60 60H190" stroke="var(--sun)" stroke-width="4" stroke-linecap="round"/><circle cx="115" cy="38" r="6" fill="var(--sun)"/><text x="200" y="36" font-size="22" font-weight="700" fill="var(--ok)">€</text></svg>`,
-    mount
-  });
+  App.register({ id: "pricing", order: 4, title: "Preis-Setter", levelsKey: "pricing", chapters: ["Kap 6"], mount });
 })();

@@ -18,8 +18,7 @@
     { name: "Cumbre", desc: "12 parejas tapadas de todo el script. Máximo 2 errores.", chs: ALL, size: 12, mode: "memory", maxErr: 2 }
   ];
 
-  const backArt = ch => (ch % 2 ? App.art.wave() : App.art.peak()).replace("</svg>",
-    `<rect x="94" y="34" width="52" height="28" rx="6" fill="var(--surface)" opacity=".9"/><text x="120" y="53" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="14" font-weight="600" fill="var(--ink)">K${ch}</text></svg>`);
+
 
   function mount(root) {
     let mastery = App.store.get("mastery", {});
@@ -40,7 +39,6 @@
     const board = h("div", { class: "mboard" });
     const log = h("div", { class: "mlog" });
     const stat = h("div", { class: "row label", "aria-live": "polite" });
-    const hint = h("p", { style: { color: "var(--muted)" } });
     const bar = App.levelBar("memory", LEVELS, () => newRound());
 
     function renderPlay() {
@@ -63,8 +61,9 @@
         h("button", { type: "button", "aria-pressed": S.size === v, text: v, onclick: () => { S.size = v; savePrefs(); renderSegs(); newRound(); } })));
     }
     function renderStat() {
-      const lim = S.cfg && S.cfg.maxErr != null ? ` (máx. ${S.cfg.maxErr})` : "";
-      stat.textContent = `Jugadas ${S.moves} · Errores ${S.errors}${lim} · Parejas ${S.matched}/${S.deck.length / 2}`;
+      const lim = S.cfg && S.cfg.maxErr != null ? ` / ${S.cfg.maxErr}` : "";
+      const one = S.cfg && S.cfg.chs.length === 1 ? `K${S.cfg.chs[0]} · ` : "";
+      stat.textContent = `${one}Parejas ${S.matched}/${S.deck.length / 2} · Errores ${S.errors}${lim} · Jugadas ${S.moves}`;
     }
 
     function newRound() {
@@ -74,9 +73,6 @@
         S.cfg = { ...L, chs: L.chs === "one" ? [App.pick(ALL)] : L.chs };
       } else S.cfg = { chs: [...S.chs], size: S.size, mode: S.mode, maxErr: null };
       const cfg = S.cfg, chs = new Set(cfg.chs);
-      hint.textContent = (cfg.mode === "memory"
-        ? "Gira dos cartas: un Begriff (borde naranja) y su Erklärung (borde azul). Si no coinciden, se tapan de nuevo. Un error de memoria cuenta cuando ya habías visto la pareja correcta."
-        : "Todas las cartas están abiertas: toca un Begriff y luego su Erklärung.") + (cfg.chs.length === 1 && S.play === "levels" ? ` Capítulo de esta ronda: K${cfg.chs[0]}.` : "");
       const pool = PAIRS.filter(p => chs.has(p.ch)).map(p => ({ p, k: (mastery[p.id] ? mastery[p.id].s : -1) + Math.random() * 0.95 }));
       pool.sort((a, b) => a.k - b.k);
       const pairs = pool.slice(0, cfg.size).map(x => x.p);
@@ -88,7 +84,7 @@
         const p = BY[c.pid];
         board.append(h("button", { class: "mcard", type: "button", id: "mc" + c.i, onclick: () => click(c.i) },
           h("div", { class: "in" },
-            h("div", { class: "fc bk", html: backArt(p.ch) }),
+            h("div", { class: "fc bk" + (p.ch % 2 ? "" : " even") }, h("span", { text: "K" + p.ch })),
             h("div", { class: "fc ft " + c.kind },
               h("div", { class: "lb" }, h("span", { text: (c.kind === "term" ? "Begriff" : "Erklärung") + " · K" + p.ch })),
               h("div", { class: "tx", text: c.kind === "term" ? p.term : p.def })))));
@@ -152,7 +148,6 @@
     }
     function renderLog() {
       log.replaceChildren();
-      if (!S.log.length) { log.append(h("div", { class: "empty", text: "Cada pareja encontrada aparece aquí con el texto completo y su vídeo explicativo para repasarla." })); return; }
       S.log.forEach(x => {
         const p = BY[x.pid], v = App.videos.byId(x.pid);
         log.append(h("div", { class: "e" },
@@ -184,23 +179,17 @@
           h("button", { class: "chip", type: "button", text: "Todos", onclick: () => { S.chs = new Set(ALL); savePrefs(); renderChips(); } }),
           h("button", { class: "chip", type: "button", text: "Ninguno", onclick: () => { S.chs = new Set(); savePrefs(); renderChips(); } }))),
       chips,
-      h("div", { class: "row" }, h("span", { class: "label", text: "Modo" }), modeSeg, h("span", { class: "label", text: "Parejas" }), sizeSeg,
+      h("div", { class: "row" }, modeSeg, sizeSeg,
         h("button", { class: "btn", type: "button", text: "Nueva ronda", onclick: newRound })));
     root.append(
-      h("div", { class: "row" }, h("span", { class: "label", text: "Cómo jugar" }), playSeg),
+      h("div", { class: "row" }, playSeg),
       bar.el, freePanel,
       h("div", { class: "split" },
-        h("div", { class: "stack" }, hint, stat, board),
-        h("div", { class: "panel stack" }, h("span", { class: "label", text: "Encontradas en esta ronda" }), log)));
+        h("div", { class: "stack" }, stat, board),
+        h("div", { class: "panel stack" }, h("h3", { text: "Encontradas" }), log)));
     renderChips(); renderSegs(); renderPlay(); newRound();
     return () => clearTimeout(S.pending);
   }
 
-  App.register({
-    id: "memory", order: 1, title: "Memory de conceptos", levelsKey: "memory",
-    desc: "Las 247 parejas Begriff–Erklärung del script en 9 niveles: más parejas, cartas tapadas y menos errores permitidos.",
-    intro: "Encuentra cada Begriff con su Erklärung. En el modo Niveles cada nivel tiene más parejas y permite menos errores. En el modo Libre eliges capítulos y tamaño. Cada ronda prioriza los conceptos que aún no has visto o que fallaste.",
-    chapters: ["Kap 1–9"], sector: ["surf", "snow"], art: () => App.art.wave().replace("</svg>", `<g transform="translate(70 24)"><rect width="44" height="54" rx="6" fill="var(--surface)" stroke="var(--line)"/><rect x="56" y="-6" width="44" height="54" rx="6" fill="var(--snow)" transform="rotate(8 78 21)"/><text x="22" y="33" text-anchor="middle" font-size="18" font-weight="700" fill="var(--sun)">?</text></g></svg>`),
-    mount
-  });
+  App.register({ id: "memory", order: 1, title: "Memory", levelsKey: "memory", chapters: ["Kap 1–9"], mount });
 })();

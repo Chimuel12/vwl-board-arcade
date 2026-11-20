@@ -133,12 +133,5 @@
     return () => stop();
   }
 
-  App.register({
-    id: "advantage", order: 7, title: "Taller doble", levelsKey: "advantage",
-    desc: "9 niveles de ventaja comparativa: dos y tres talleres, ventaja absoluta en todo, cálculo del coste de oportunidad y maximización de ingresos.",
-    intro: "Reparte las horas de los talleres entre Surfboards y Snowboards. El punto naranja se mueve sobre la frontera de producción conjunta. En los niveles altos hay tres talleres y precios de venta.",
-    chapters: ["Kap 3"], sector: ["surf", "snow"],
-    art: () => `<svg viewBox="0 0 240 96" aria-hidden="true"><rect width="240" height="96" fill="var(--sky)"/><path d="M0 96L50 40l25 22 30-34 40 68z" fill="var(--rock)"/><path d="M50 40l9 10-7-2-6 5z" fill="var(--peak)"/><path d="M120 70c20-10 40-10 60 0s40 10 60 0v26H120z" fill="var(--sea2)"/><g transform="rotate(-30 150 40)"><rect x="132" y="34" width="44" height="10" rx="5" fill="var(--sun)"/></g><g transform="rotate(20 70 30)"><rect x="52" y="24" width="40" height="9" rx="4" fill="var(--snow)"/></g></svg>`,
-    mount
-  });
+  App.register({ id: "advantage", order: 7, title: "Taller doble", levelsKey: "advantage", chapters: ["Kap 3"], mount });
 })();
