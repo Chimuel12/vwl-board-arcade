@@ -10,12 +10,20 @@ Cada mañana una rutina en la nube investiga noticias reales de **surf**, **snow
 
 ## 2. Investigar
 
-- Busca noticias **de las últimas 72 horas** (como máximo 7 días). Hasta 3 de las 20 preguntas pueden usar contexto de los últimos 12 meses si sigue siendo relevante.
+**Herramientas (importante).** El entorno en la nube **no deja abrir la mayoría de webs de noticias**: `WebFetch` falla con `getaddrinfo ENOTFOUND`. Eso es normal y **no es motivo para parar**.
+
+- Investiga con **`WebSearch` en `mode: "extended"`**: da resultados recientes con el texto de los artículos. El modo estándar suele devolver noticias antiguas.
+- Pon el mes y el año en las consultas (`November 2026`, `noviembre 2026`) y busca en alemán, inglés y español. Haz al menos 12 búsquedas distintas (por tema, región, empresa) antes de decidir que falta material.
+- `WebFetch` es opcional: pruébalo como mucho una vez; si da `ENOTFOUND` o está bloqueado, no lo vuelvas a usar en toda la sesión.
+- **Dato verificado** = la cifra, la empresa y la fecha aparecen en el texto de un resultado de `WebSearch` (o en una página abierta con `WebFetch`). Lo que no aparezca así no se usa. `src.u` es la URL de ese resultado.
+- Solo si después de 25 búsquedas no tienes 8 noticias verificables, termina sin archivo y explica qué buscaste. En cualquier otro caso, escribe el día completo.
+
+- Busca noticias **de las últimas 72 horas** (como máximo 7 días). Hasta 5 de las 20 preguntas pueden usar contexto de los últimos 12 meses si sigue siendo relevante.
 - Temas:
   - **surf**: industria del surf, marcas de tablas y neoprenos, parques de olas, escuelas, turismo de surf, WSL/competiciones con ángulo de negocio, costas y medio ambiente.
   - **snow**: estaciones (Alpes y Norteamérica), forfaits y pases de temporada, precios, nieve y clima, marcas de snowboard/esquí, aranceles, empleo en temporada.
   - **tech**: IA, chips, grandes tecnológicas (resultados, inversión, regulación), comercio y aranceles tecnológicos, energía de centros de datos, startups.
-- Usa medios fiables (agencias, prensa económica, medios especializados como Shop-Eat-Surf-Outdoor, BoardSport Source, Wave Pool Magazine, SnowBrains, Skift, CNBC, Reuters, Handelsblatt, Tagesschau, ORF…). Abre el artículo y comprueba cada dato que uses.
+- Usa medios fiables (agencias, prensa económica, medios especializados como Shop-Eat-Surf-Outdoor, BoardSport Source, Wave Pool Magazine, SnowBrains, Skift, CNBC, Reuters, Handelsblatt, Tagesschau, ORF…). Comprueba cada dato que uses como se explica arriba.
 - Necesitas al menos **8 noticias distintas**. Como máximo 3 preguntas por noticia.
 
 ## 3. Escribir las 20 preguntas
