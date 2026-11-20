@@ -98,5 +98,5 @@ NEWS_DAYS.push({ d: "FECHA", n: 20, title: "Resumen en español de los temas del
 
 1. `node tools/validate-news.mjs` tiene que terminar con **0 errores**. Corrige y repite hasta que pase. Revisa también los avisos de reparto.
 2. Haz commit con el mensaje `Actualidad FECHA: 20 preguntas`.
-3. Haz push de la rama de trabajo de la sesión (`git push -u origin HEAD`). Si estás en `main`, crea antes `claude/news-FECHA`. No hace falta abrir un pull request: la GitHub Action `Merge daily news` vuelve a validar la rama, la fusiona en `main` (solo si únicamente cambian archivos de `js/data/news/`) y publica la web.
+3. Haz push de la rama de trabajo de la sesión (`git push -u origin HEAD`). Si estás en `main` o sin rama (`HEAD (no branch)`, lo normal en la rutina), crea antes la rama: `git checkout -b claude/news-FECHA`. Si el push se rechaza, lee el error, prueba con el nombre de rama `claude/…` que indique y, si aun así falla, termina explicando el error. No hace falta abrir un pull request: la GitHub Action `Merge daily news` vuelve a validar la rama, la fusiona en `main` (solo si únicamente cambian archivos de `js/data/news/`) y publica la web.
 4. Termina con un resumen corto: las noticias usadas y el reparto por tema, nivel y capítulo.
