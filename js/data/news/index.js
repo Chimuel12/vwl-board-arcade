@@ -5,3 +5,4 @@ NEWS_DAYS.push({ d: "2026-11-08", n: 20, title: "Pases de Vail y forfaits en los
 NEWS_DAYS.push({ d: "2026-11-20", n: 20, title: "Surfpark medō en Werne, swell de Maverick's y feria SIMA, Epic Pass y estaciones alpinas, resultados de Nvidia, demanda eléctrica de IA y aranceles IEEPA" });
 NEWS_DAYS.push({ d: "2026-11-21", n: 20, title: "Rip Curl y la OPA de KMD, precios del parque de olas DSRT, forfaits alpinos y pases de Vail/Ikon, deuda de Microsoft para IA, AI Act de la UE y aranceles a chips" });
 NEWS_DAYS.push({ d: "2026-11-22", n: 20, title: "Surfpark Gemswell en Madrid y Wave Pool Surf League, forfaits de Feldberg y Winterberg, resultados de Amer Sports, electricidad de centros de datos y chips a China" });
+NEWS_DAYS.push({ d: "2026-11-23", n: 20, title: "El Niño en California y Wave Pool Surf League, Gemswell y medō, forfaits y pases Epic/Ikon, resultados de Nvidia, red eléctrica por la IA y aranceles a China" });
