@@ -8,3 +8,4 @@ NEWS_DAYS.push({ d: "2026-11-22", n: 20, title: "Surfpark Gemswell en Madrid y W
 NEWS_DAYS.push({ d: "2026-11-23", n: 20, title: "El Niño en California y Wave Pool Surf League, Gemswell y medō, forfaits y pases Epic/Ikon, resultados de Nvidia, red eléctrica por la IA y aranceles a China" });
 NEWS_DAYS.push({ d: "2026-11-24", n: 20, title: "O'Neill pasa a Authentic, fin de Molokai 2 Oahu, Backcountry compra Christy Sports, inicio de temporada alpino, Nvidia y China, impuesto a centros de datos" });
 NEWS_DAYS.push({ d: "2026-11-25", n: 20, title: "Swell de Maverick's, Ride The Future y Wavegarden, pases Epic/Indy y forfaits en Zugspitze y Zermatt, resultados de Nvidia y controles de exportación de chips a China" });
+NEWS_DAYS.push({ d: "2026-11-26", n: 20, title: "O'Neill y Authentic, piscinas de olas, forfaits en Austria y Colorado, chips de Nvidia, electricidad y deuda de centros de datos" });
