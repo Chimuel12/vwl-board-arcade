@@ -10,3 +10,4 @@ NEWS_DAYS.push({ d: "2026-11-24", n: 20, title: "O'Neill pasa a Authentic, fin d
 NEWS_DAYS.push({ d: "2026-11-25", n: 20, title: "Swell de Maverick's, Ride The Future y Wavegarden, pases Epic/Indy y forfaits en Zugspitze y Zermatt, resultados de Nvidia y controles de exportación de chips a China" });
 NEWS_DAYS.push({ d: "2026-11-26", n: 20, title: "O'Neill y Authentic, piscinas de olas, forfaits en Austria y Colorado, chips de Nvidia, electricidad y deuda de centros de datos" });
 NEWS_DAYS.push({ d: "2026-11-27", n: 20, title: "Colapso del muelle de Pacifica, O'Neill y piscinas de olas, forfaits en Austria y pases Epic/Ikon, Nvidia y China, capex y electricidad de centros de datos" });
+NEWS_DAYS.push({ d: "2026-11-28", n: 20, title: "Ride The Future, Rip Curl y Bluestar, surf park medō, aperturas en Utah y Montana, precios en Ischgl, caída del Nasdaq y centros de datos" });
